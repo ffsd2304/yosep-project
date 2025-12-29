@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <html>
 <head>
-    <title>jQuery AJAX 테스트</title>
+    <title>jQuery AJAX 박요셉 테스트</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <script>
