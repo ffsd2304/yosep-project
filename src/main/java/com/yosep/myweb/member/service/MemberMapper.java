@@ -1,4 +1,4 @@
-package com.yosep.myweb.service;
+package com.yosep.myweb.member.service;
 
 import java.util.List;
 

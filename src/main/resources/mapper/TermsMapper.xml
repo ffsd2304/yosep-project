@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yosep.myweb.terms.service.TermsMapper">
+
+    <select id="getTerms" 
+            parameterType="String" 
+            resultType="TermsDTO">
+        SELECT 
+            TERM_SEQ      as termSeq,
+            TERM_CAT_SEQ  as termCatSeq,
+            TERM_TITLE    as termTitle,
+            TERM_CONTENT  as termContent,
+            USE_YN        as useYn
+        FROM TERMS
+        WHERE TERM_CAT_SEQ = #{termCatSeq}
+          AND USE_YN = 'Y'
+    </select>
+
+</mapper>

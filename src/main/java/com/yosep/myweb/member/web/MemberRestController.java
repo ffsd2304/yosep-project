@@ -1,4 +1,4 @@
-package com.yosep.myweb.web;
+package com.yosep.myweb.member.web;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yosep.myweb.service.MemberDTO;
-import com.yosep.myweb.service.MemberMapper;
+import com.yosep.myweb.member.service.MemberDTO;
+import com.yosep.myweb.member.service.MemberMapper;
 
 @RestController // 이 컨트롤러는 HTML이 아닌 데이터(JSON)만 보냅니다.
 public class MemberRestController {

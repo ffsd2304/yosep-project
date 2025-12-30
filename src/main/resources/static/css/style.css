@@ -120,20 +120,21 @@ body {
 .btn-primary {
     width: 100%;
     height: 56px;
-    background-color: #DDDDDD; /* 비활성 느낌의 회색 (이미지 참조) */
+    background-color: #DDDDDD; /* 기본 비활성 색상 */
     color: #999999;
     border: none;
     border-radius: var(--radius-base);
     font-size: 18px;
     font-weight: bold;
-    cursor: pointer;
+    cursor: not-allowed;       /* 기본적으로 클릭 금지 아이콘 */
     transition: all 0.2s;
 }
 
 /* 버튼이 활성화 되었을 때 (나중에 JS로 제어 가능) */
-.btn-primary.active, .btn-primary:hover {
-    background-color: var(--color-primary); /* 브랜드 컬러 */
+.btn-primary.active {
+    background-color: var(--color-primary); /* #FFCC00 */
     color: var(--color-text-main);
+    cursor: pointer;           /* 클릭 가능한 손가락 아이콘으로 변경 */
 }
 
 /* =========================================
@@ -220,6 +221,77 @@ body {
     color: var(--color-text-main);
     border: none;
     border-radius: var(--radius-base);
-    font-weight: bold;
+    
+    /* 요셉님 요청 사항: 글씨 크기 확대 */
+    font-size: 15px;          /* 기존보다 키운 18px 적용 */
+    font-weight: bold;        /* 두껍게 처리하여 강조 */
+    letter-spacing: -0.5px;   /* 글자 간격을 살짝 좁혀 가독성 향상 */
+    
     cursor: pointer;
+    display: flex;            /* 글자 중앙 정렬을 위해 추가 */
+    justify-content: center;
+    align-items: center;
+}
+
+/* =========================================
+    Component: Custom Checkbox (수정본)
+   ========================================= */
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* label을 클릭 가능하게 만들고 정렬을 맞춤 */
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    height: 18px; /* 높이 고정 */
+}
+
+/* 실제 input은 절대 위치로 숨김 */
+.checkbox-group input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* 커스텀 체크박스 본체 */
+.custom-check {
+    display: inline-block; /* 중요: 영역 확보 */
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border: 2px solid var(--color-border);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s;
+    box-sizing: border-box; /* 테두리 포함 크기 계산 */
+}
+
+/* 체크 시 배경색 변경 (노란색) */
+.checkbox-group input[type="checkbox"]:checked + .custom-check {
+    background-color: #FFD400;
+    border-color: #FFD400;
+}
+
+/* V자 체크 표시 (흰색) */
+.custom-check::after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 4px;   /* 위치 미세 조정 */
+    top: 0px;    /* 위치 미세 조정 */
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* 체크 시 V자 보이기 */
+.checkbox-group input[type="checkbox"]:checked + .custom-check::after {
+    display: block;
 }
