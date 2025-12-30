@@ -11,4 +11,9 @@ public class HomeController {
     public String home(Model model) {
         return "home"; // home.jsp를 찾아가라는 뜻
     }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "main/login"; // login.jsp를 호출
+    }
 }

@@ -25,9 +25,11 @@ public class MemberRestController {
     // MemberRestController.java 에 추가
     @PostMapping("/api/members") // 데이터를 생성/저장할 때는 POST!
     public String insertMember(@RequestBody MemberDTO memberDTO) {
-        // 실제로는 여기서 
-        System.out.println("받은 데이터: " + memberDTO);
-        memberMapper.insertMember(memberDTO);
-        return "success";
+        int result = memberMapper.insertMember(memberDTO); // 결과 받기
+        if (result > 0) {
+            return "success"; // 1 이상이면 성공
+        } else {
+            return "fail";    // 0이면 저장 실패
+        }
     }
 }
