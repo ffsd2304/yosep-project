@@ -41,12 +41,12 @@
             // 1. 개인정보 동의 팝업 열기 (common.js의 함수 사용)
             $("#linkPrivacy").click(function(e) {
                 e.preventDefault();
-                
+                const termCode = "${privacyTermCode}";
                 $.ajax({
                     url: '/api/terms',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ termCatSeq: 'C000000001' }),
+                    data: JSON.stringify({ termCatSeq: termCode }),
                     success: function(data) {
                         if(data) {
                             // 3번째 인자로 '확인 버튼 클릭 시 실행할 함수'를 전달합니다.
@@ -62,14 +62,31 @@
 
             // 로그인 버튼 클릭 이벤트
             $("#btnLogin").click(function() {
-                // disabled 상태이면 이 이벤트 자체가 발생하지 않지만, 확실히 하기 위해 로직 유지
                 const userId = $("#userId").val();
                 const userPw = $("#userPw").val();
-                
-                console.log("로그인 성공 조건 충족! AJAX 통신 시작...");
-                // 여기에 로그인 API 호출 코드가 들어갑니다.
-            });
 
+                $.ajax({
+                    url: '/api/login',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        userId: userId,
+                        userPw: userPw
+                    }),
+                    success: function(data) {
+                        if (data.status === "SUCCESS") {
+                            // 성공 시 메인 페이지로 이동!
+                            location.href = "/main"; 
+                        } else {
+                            // 실패 시 공통 모달로 알림
+                            openModal("로그인 실패", data.message);
+                        }
+                    },
+                    error: function() {
+                        openModal("에러", "서버 통신 중 오류가 발생했습니다.");
+                    }
+                });
+            });
             // [추가] 버튼 활성화 상태를 체크하는 함수
             function checkLoginStatus() {
                 const userId = $("#userId").val().trim();

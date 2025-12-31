@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yosep.myweb.product.service.ProductMapper">
+
+    <select id="getProductList" resultType="ProductDTO" parameterType="map">
+        SELECT 
+            P.PROD_ID     AS prodId,
+            P.CATE_CODE   AS cateCode,
+            P.PROD_NAME   AS prodName,
+            P.PROD_PRICE  AS prodPrice,
+            P.FILE_NAME   AS fileName,
+            P.IMAGE_URL   AS imageUrl,
+            D.DETAIL_NAME AS cateName
+        FROM PRODUCT_MASTER P
+        INNER JOIN CODE_DETAIL D ON P.CATE_CODE = D.DETAIL_CODE
+        INNER JOIN CODE_MASTER M ON D.MASTER_CODE = M.MASTER_CODE
+        <where>
+            AND M.MASTER_CODE = 'PROD_CATEGORY'
+            AND M.USE_YN = 'Y'
+            AND D.USE_YN = 'Y'
+            AND P.USE_YN = 'Y'
+            
+            <if test="cateCode != null and cateCode != ''">
+                AND P.CATE_CODE = #{cateCode}
+            </if>
+        </where>
+        
+        <choose>
+            <when test="sortType == 'PRICE_LOW'">
+                ORDER BY P.PROD_PRICE ASC
+            </when>
+            <when test="sortType == 'PRICE_HIGH'">
+                ORDER BY P.PROD_PRICE DESC
+            </when>
+            <otherwise>
+                ORDER BY P.REG_DATE DESC, P.PROD_ID DESC 
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

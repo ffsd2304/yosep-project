@@ -1,51 +1,70 @@
 /* =========================================
-   Yosep Service Design System (Standard)
+   Yosep Service Design System (Unified)
    ========================================= */
 :root {
-    /* 1. 컬러 팔레트 (앞으로 이 색상만 씁니다) */
-    --color-primary: #FFCC00;    /* 포인트 컬러 (KB 느낌의 노란색 혹은 원하시는 색으로 변경 가능) */
+    /* 1. 컬러 팔레트 */
+    --color-primary: #FFCC00;    /* 메인 포인트 컬러 */
     --color-text-main: #111111;  /* 기본 검정 글씨 */
-    --color-text-sub: #767676;   /* 연한 회색 글씨 (설명 등) */
-    --color-bg-input: #F4F4F4;   /* 입력창 배경색 (연한 회색) */
+    --color-text-sub: #767676;   /* 설명용 회색 글씨 */
+    --color-bg-input: #F4F4F4;   /* 입력창/배경 회색 */
     --color-border: #E6E6E6;     /* 테두리 색상 */
     --color-white: #FFFFFF;
     
     /* 2. 여백 및 크기 표준 */
     --spacing-base: 20px;
-    --radius-base: 12px;         /* 둥근 모서리 표준 */
+    --radius-base: 12px;
     --font-size-title: 24px;
     --font-size-body: 15px;
 }
 
-/* 초기화 */
+/* =========================================
+   1. 초기화 및 전역 레이아웃
+   ========================================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Noto Sans KR', sans-serif; /* 폰트는 시스템 폰트 사용 */
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 body {
-    background-color: #F9F9F9; /* 전체 배경은 아주 연한 회색 */
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+    /* 로그인 화면은 중앙 정렬, 메인 화면은 상단 정렬을 유연하게 처리하기 위함 */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* 화면 꽉 채우기 */
+}
+
+/* 메인 앱 컨테이너 (모바일 뷰 프레임) */
+.explore-container {
+    width: 100%;
+    max-width: 480px;  /* 모바일 너비 제한 */
+    margin: 0 auto;
+    background-color: var(--color-white);
+    min-height: 100vh;
+    padding-bottom: 80px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    position: relative;
+    /* 내용이 많아 길어질 경우 화면 상단부터 시작하도록 설정 */
+    align-self: flex-start; 
 }
 
 /* =========================================
-   Component: Login Card
+   2. 로그인 & 회원가입 컴포넌트
    ========================================= */
 .login-container {
     width: 100%;
-    max-width: 400px;     /* 모바일 뷰와 비슷하게 너비 제한 */
+    max-width: 400px;
     background-color: var(--color-white);
     padding: 30px;
     border-radius: var(--radius-base);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* 살짝 그림자 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-/* 1. 헤더 (로고 + 닫기 버튼) */
 .login-header {
     display: flex;
     justify-content: space-between;
@@ -67,14 +86,12 @@ body {
     border: none;
 }
 
-/* 2. 입력 폼 영역 */
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 12px; /* 입력창 사이 간격 */
+    gap: 12px;
 }
 
-/* 공통 입력창 스타일 (Standard Input) */
 .input-field {
     width: 100%;
     height: 56px;
@@ -84,19 +101,14 @@ body {
     background-color: var(--color-bg-input);
     font-size: 16px;
     color: var(--color-text-main);
-    outline: none; /* 클릭 시 파란 테두리 제거 */
+    outline: none;
     transition: background-color 0.2s;
 }
 
-.input-field::placeholder {
-    color: #AAAAAA;
-}
-
 .input-field:focus {
-    background-color: #EBEBEB; /* 포커스 됐을 때 살짝 진하게 */
+    background-color: #EBEBEB;
 }
 
-/* 3. 링크 영역 (회원가입 등) */
 .link-group {
     display: flex;
     justify-content: space-between;
@@ -112,50 +124,40 @@ body {
     cursor: pointer;
 }
 
-.text-link:hover {
-    text-decoration: underline;
-}
+.text-link:hover { text-decoration: underline; }
 
-/* 4. 버튼 (Standard Button) */
 .btn-primary {
     width: 100%;
     height: 56px;
-    background-color: #DDDDDD; /* 기본 비활성 색상 */
+    background-color: #DDDDDD;
     color: #999999;
     border: none;
     border-radius: var(--radius-base);
     font-size: 18px;
     font-weight: bold;
-    cursor: not-allowed;       /* 기본적으로 클릭 금지 아이콘 */
     transition: all 0.2s;
+    cursor: pointer;
 }
 
-/* 버튼이 활성화 되었을 때 (나중에 JS로 제어 가능) */
 .btn-primary.active {
-    background-color: var(--color-primary); /* #FFCC00 */
+    background-color: var(--color-primary);
     color: var(--color-text-main);
-    cursor: pointer;           /* 클릭 가능한 손가락 아이콘으로 변경 */
 }
 
 /* =========================================
-   Component: Common Modal (공통 팝업)
+   3. 공통 모달 (Popup)
    ========================================= */
-
-/* 1. 팝업 배경 (어둡게 처리) */
 .modal-overlay {
-    display: none; /* 기본은 숨김 */
+    display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
 
-/* 2. 팝업 본체 */
 .modal-content {
     background-color: var(--color-white);
     width: 90%;
@@ -164,7 +166,7 @@ body {
     padding: 24px;
     position: relative;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    animation: modal-fade-in 0.3s ease-out; /* 등장 애니메이션 */
+    animation: modal-fade-in 0.3s ease-out;
 }
 
 @keyframes modal-fade-in {
@@ -172,7 +174,6 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 3. 팝업 헤더 */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -188,31 +189,19 @@ body {
     color: var(--color-text-main);
 }
 
-/* 4. 팝업 바디 (내용 영역) */
 .modal-body {
     max-height: 400px;
-    overflow-y: auto; /* 내용이 길면 스크롤 */
+    overflow-y: auto;
     font-size: 14px;
     line-height: 1.6;
     color: var(--color-text-sub);
     margin-bottom: 24px;
     padding-right: 8px;
 }
+.modal-body::-webkit-scrollbar { width: 6px; }
+.modal-body::-webkit-scrollbar-thumb { background-color: var(--color-border); border-radius: 10px; }
 
-/* 스크롤바 디자인 */
-.modal-body::-webkit-scrollbar {
-    width: 6px;
-}
-.modal-body::-webkit-scrollbar-thumb {
-    background-color: var(--color-border);
-    border-radius: 10px;
-}
-
-/* 5. 팝업 푸터 (버튼 영역) */
-.modal-footer {
-    display: flex;
-    gap: 10px;
-}
+.modal-footer { display: flex; gap: 10px; }
 
 .btn-modal-close {
     flex: 1;
@@ -221,77 +210,248 @@ body {
     color: var(--color-text-main);
     border: none;
     border-radius: var(--radius-base);
-    
-    /* 요셉님 요청 사항: 글씨 크기 확대 */
-    font-size: 15px;          /* 기존보다 키운 18px 적용 */
-    font-weight: bold;        /* 두껍게 처리하여 강조 */
-    letter-spacing: -0.5px;   /* 글자 간격을 살짝 좁혀 가독성 향상 */
-    
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: -0.5px;
     cursor: pointer;
-    display: flex;            /* 글자 중앙 정렬을 위해 추가 */
+    display: flex;
     justify-content: center;
     align-items: center;
 }
 
 /* =========================================
-    Component: Custom Checkbox (수정본)
+   4. 커스텀 체크박스
    ========================================= */
-
 .checkbox-group {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-
-/* label을 클릭 가능하게 만들고 정렬을 맞춤 */
 .checkbox-group label {
     display: flex;
     align-items: center;
     cursor: pointer;
-    height: 18px; /* 높이 고정 */
-}
-
-/* 실제 input은 절대 위치로 숨김 */
-.checkbox-group input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
-
-/* 커스텀 체크박스 본체 */
-.custom-check {
-    display: inline-block; /* 중요: 영역 확보 */
-    width: 18px;
     height: 18px;
+}
+.checkbox-group input[type="checkbox"] {
+    position: absolute; opacity: 0; cursor: pointer;
+}
+.custom-check {
+    display: inline-block;
+    width: 18px; height: 18px;
     background-color: #fff;
     border: 2px solid var(--color-border);
     border-radius: 4px;
     position: relative;
     transition: all 0.2s;
-    box-sizing: border-box; /* 테두리 포함 크기 계산 */
+    box-sizing: border-box;
 }
-
-/* 체크 시 배경색 변경 (노란색) */
 .checkbox-group input[type="checkbox"]:checked + .custom-check {
-    background-color: #FFD400;
-    border-color: #FFD400;
+    background-color: #FFD400; border-color: #FFD400;
 }
-
-/* V자 체크 표시 (흰색) */
 .custom-check::after {
-    content: '';
-    position: absolute;
-    display: none;
-    left: 4px;   /* 위치 미세 조정 */
-    top: 0px;    /* 위치 미세 조정 */
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
+    content: ''; position: absolute; display: none;
+    left: 4px; top: 0px;
+    width: 5px; height: 10px;
+    border: solid white; border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
-
-/* 체크 시 V자 보이기 */
 .checkbox-group input[type="checkbox"]:checked + .custom-check::after {
     display: block;
+}
+
+/* =========================================
+   5. 메인 배너 (Swiper)
+   ========================================= */
+.main-banner {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: var(--color-bg-input);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.swiper-slide img {
+    width: 100%; height: 100%; object-fit: contain;
+    background-color: #f8f8f8;
+}
+
+.swiper-pagination { bottom: 20px !important; }
+.swiper-pagination-bullet {
+    width: 8px !important; height: 8px !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    opacity: 1 !important;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+.swiper-pagination-bullet-active {
+    width: 20px !important;
+    border-radius: 10px !important;
+    background: #ffcc00 !important;
+}
+
+/* =========================================
+   6. [통합] 카테고리 슬라이더 + 필터 섹션
+   (기존 filter-section과 중복된 부분 정리 완료)
+   ========================================= */
+.category-section {
+    display: flex;
+    align-items: center;
+    padding: 15px 0 10px 20px;
+    position: relative;
+}
+
+/* 슬라이더 영역 (블러 포함) */
+.slider-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.category-slider {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-right: 40px; /* 블러 영역 공간 확보 */
+    scrollbar-width: none;
+    cursor: grab;
+    user-select: none; /* 드롭다운 텍스트가 선택되는 현상 방지 */
+}
+/* 마우스를 꾹 누르고 있는 상태: 잡고 있는 표시 */
+.category-slider:active {
+    cursor: grabbing;
+}
+.category-slider::-webkit-scrollbar { display: none; }
+
+/* 오른쪽 블러 효과 */
+.slider-blur {
+    position: absolute;
+    right: 0; top: 0;
+    width: 50px; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 칩 버튼 스타일 */
+.chip {
+    padding: 8px 18px;
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    background: white;
+    font-size: 13px;
+    color: var(--color-text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 0 0 auto; /* 찌그러짐 방지 */
+}
+.chip.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-main);
+    font-weight: bold;
+}
+
+/* 정렬 버튼 및 드롭다운 (카테고리 옆에 고정) */
+.filter-wrap {
+    padding: 0 15px;
+    position: relative;
+    background: white;
+    z-index: 10;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--color-text-sub);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.sort-dropdown {
+    display: none;
+    position: absolute;
+    top: 40px; right: 15px;
+    width: 120px;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    z-index: 100;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+}
+
+.sort-item {
+    padding: 12px 15px;
+    font-size: 13px;
+    color: var(--color-text-main);
+    cursor: pointer;
+    border-bottom: 1px solid #f9f9f9;
+}
+.sort-item:last-child { border-bottom: none; }
+.sort-item.active { color: var(--color-primary); font-weight: bold; }
+.sort-item:hover { background-color: #f5f5f5; }
+
+/* =========================================
+   7. 상품 그리드 (Product Grid)
+   ========================================= */
+.product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 20px 40px;
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: var(--color-bg-input);
+    border-radius: var(--radius-base);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.product-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    /* 이미지 없을 시 로딩바 혹은 기본 배경 */
+    background: url('/images/loading_spinner.gif') no-repeat center; 
+}
+
+.btn-wish {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.product-info { padding-top: 10px; }
+.p-name { font-weight: bold; font-size: 15px; margin-top: 5px; }
+.p-desc { color: var(--color-text-sub); font-size: 13px; margin: 2px 0; }
+.p-price {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin-top: 4px;
 }

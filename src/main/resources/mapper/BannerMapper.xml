@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yosep.myweb.banner.service.BannerMapper">
+
+    <select id="getBannerList" resultType="BannerDTO">
+        SELECT 
+            BANNER_SEQ  AS bannerSeq,   /* 배너 일련번호 */
+            FILE_NAME   AS fileName,    /* 배너 파일명 */
+            IMAGE_URL   AS imageUrl,    /* 배너 이미지 경로 */
+            BANNER_TEXT AS bannerText,  /* 배너 텍스트 */
+            SORT_ORDER  AS sortOrder    /* 정렬 순서 */
+        FROM MAIN_BANNER
+       WHERE USE_YN = 'Y'              /* 사용 중인 배너만 */
+       ORDER BY SORT_ORDER ASC         /* 순서가 낮은 숫자가 위로 (1, 2, 3...) */
+       FETCH FIRST 3 ROWS ONLY         /* 상위 3개 데이터만 가져오기 */
+    </select>
+
+</mapper>

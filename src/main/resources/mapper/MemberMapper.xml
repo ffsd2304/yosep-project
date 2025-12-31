@@ -21,15 +21,25 @@
             )
     </insert>
 
-<select id="getAllMembers" resultType="MemberDTO">
-    SELECT 
-        USER_ID as userId, 
-        USER_PW as userPw,
-        USER_NAME as userName, 
-        BIRTH_DATE as birthDate,
-        GENDER_CODE as genderCode,
-        PHONE_NUM as phoneNum,
-        TO_CHAR(REG_DATE, 'YYYY-MM-DD') as regDate 
-    FROM MEMBER
-</select>
+    <select id="loginCheck" parameterType="MemberDTO" resultType="MemberDTO">
+        SELECT 
+            USER_ID    as userId,
+            USER_NAME  as userName
+        FROM MEMBER
+       WHERE USER_ID = #{userId}
+         AND USER_PW = #{userPw} -- 실제로는 암호화가 필요하지만 우선 평문으로 진행합니다.
+         AND USER_YN  = 'Y'
+    </select>
+
+    <select id="getAllMembers" resultType="MemberDTO">
+        SELECT 
+            USER_ID as userId, 
+            USER_PW as userPw,
+            USER_NAME as userName, 
+            BIRTH_DATE as birthDate,
+            GENDER_CODE as genderCode,
+            PHONE_NUM as phoneNum,
+            TO_CHAR(REG_DATE, 'YYYY-MM-DD') as regDate 
+        FROM MEMBER
+    </select>
 </mapper>

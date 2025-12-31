@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yosep.myweb.code.service.CommonCodeMapper">
+
+    <select id="getCodeDetailList" resultType="CommonCodeDTO">
+        SELECT 
+            D.MASTER_CODE AS masterCode,  -- 마스터 코드 그룹
+            D.DETAIL_CODE AS detailCode,  -- 상세 코드 (예: C001)
+            D.DETAIL_NAME AS detailName,  -- 상세 코드명 (예: Blazers)
+            D.SORT_ORDER  AS sortOrder,   -- 정렬 순서
+            D.USE_YN      AS useYn        -- 상세 코드 사용 여부
+        FROM CODE_DETAIL D
+        INNER JOIN CODE_MASTER M ON D.MASTER_CODE = M.MASTER_CODE  -- 마스터 테이블과 연결
+        WHERE M.MASTER_CODE = #{masterCode}  -- 요청한 그룹 코드 필터링
+        AND M.USE_YN = 'Y'                -- 코드 마스터 자체가 사용 중이어야 함
+        AND D.USE_YN = 'Y'                -- 상세 코드도 사용 중이어야 함
+        ORDER BY D.SORT_ORDER ASC           -- 지정된 순서대로 정렬
+    </select>
+
+</mapper>
