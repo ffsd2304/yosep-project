@@ -58,109 +58,132 @@
     </div>
 
     <script>
+        /**
+         * ==========================================
+         * 1. 전역 변수 및 상태 관리
+         * ==========================================
+         */
         let currentCategory = "";
         let currentSortType = "";
-        document.addEventListener('DOMContentLoaded', function() {
-            // 클래스명이 정확히 .main-banner 인지 확인하세요!
-            const swiper = new Swiper('.main-banner', { 
-                pagination: {
-                    el: '.swiper-pagination', // HTML에 있는 클래스명과 똑같아야 함
-                    clickable: true,
-                },
-                loop: true, // 2개 이상이므로 이제 루프가 가능합니다.
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                },
-            });
-        });
+
+        /**
+         * ==========================================
+         * 2. 페이지 초기화 (Entry Point)
+         * ==========================================
+         */
         $(document).ready(function() {
-            // 초기 페이지 로딩 시 데이터 불러오기
-            // 1. 페이지 로드 시 "전체(ALL)" 상품을 즉시 비동기로 가져옵니다.
-            loadProducts("", "");
-            categorySlider()
-
-            // 2. 카테고리 칩 클릭 이벤트
-            $(".chip").click(function() {
-                currentCategory = $(this).data("category"); // 클릭한 카테고리
-                
-                $(".chip").removeClass("active");
-                $(this).addClass("active");
-
-                // 카테고리와 현재 정렬 상태를 함께 전달
-                loadProducts(currentCategory, currentSortType);
-            });
-        });
-
-        function loadProducts(category, sortType) {
-            $.ajax({
-                url: "/product/list",
-                type: "GET",
-                data: { cateCode: category , sortType : sortType},
-                success: function(response) {
-                    console.log(response);
-                    $("#product-content").html(response);
-                }
-            });
-        }
-
-        // 필터 버튼 클릭 시 드롭다운 토글
-        $("#filterBtn").click(function(e) {
-            e.stopPropagation(); // 이벤트 전파 방지 (바깥 클릭 시 닫기 위해)
-            $("#sortDropdown").toggle();
-        });
-
-        // 화면 다른 곳 클릭 시 드롭다운 닫기
-        $(document).click(function() {
-            $("#sortDropdown").hide();
-        });
-
-        // 정렬 항목 클릭 시
-        $(".sort-item").click(function() {
-            // 1. 전역 변수 currentSortType 업데이트 (이 부분이 핵심입니다!)
-            currentSortType = $(this).data("sort"); 
-
-            // 2. UI 변경: 활성 상태 표시
-            $(".sort-item").removeClass("active");
-            $(this).addClass("active");
+            initMainBanner();      // 배너 슬라이더 시작
+            initCategorySlider();  // 카테고리 마우스 드래그 기능 시작
+            initEventHandlers();   // 모든 클릭 이벤트 연결
             
-            // 3. UI 변경: 버튼 텍스트를 선택한 항목 이름으로 교체
-            $(".filter-text").text($(this).text());
-            
-            // 4. AJAX 호출: 업데이트된 카테고리와 정렬값 전송
+            // 초기 데이터 로드 (전체 상품, 최신순)
             loadProducts(currentCategory, currentSortType);
         });
 
-        function categorySlider(){
+        /**
+         * ==========================================
+         * 3. 초기화 함수들 (Init Functions)
+         * ==========================================
+         */
+        function initMainBanner() {
+            new Swiper('.main-banner', { 
+                pagination: { el: '.swiper-pagination', clickable: true },
+                loop: true,
+                autoplay: { delay: 3000, disableOnInteraction: false },
+            });
+        }
+
+        function initCategorySlider() {
             const slider = document.querySelector('.category-slider');
             let isDown = false;
-            let startX;
-            let scrollLeft;
+            let startX, scrollLeft;
 
             slider.addEventListener('mousedown', (e) => {
                 isDown = true;
                 slider.classList.add('active');
-                // 클릭한 위치 계산
                 startX = e.pageX - slider.offsetLeft;
-                // 현재 스크롤 위치 저장
                 scrollLeft = slider.scrollLeft;
             });
 
-            slider.addEventListener('mouseleave', () => {
-                isDown = false;
-            });
-
-            slider.addEventListener('mouseup', () => {
-                isDown = false;
-            });
-
+            slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('active'); });
+            slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('active'); });
+            
             slider.addEventListener('mousemove', (e) => {
-                if (!isDown) return; // 마우스를 누른 상태가 아니면 종료
+                if (!isDown) return;
                 e.preventDefault();
-                // 마우스가 움직인 거리 계산
                 const x = e.pageX - slider.offsetLeft;
-                const walk = (x - startX) * 2; // 스크롤 속도 조절 (2배속)
+                const walk = (x - startX) * 2; // 스크롤 속도
                 slider.scrollLeft = scrollLeft - walk;
+            });
+        }
+
+        /**
+         * ==========================================
+         * 4. 이벤트 핸들러 모음 (Event Listeners)
+         * ==========================================
+         */
+        function initEventHandlers() {
+            // [카테고리 칩 클릭]
+            $(".chip").click(function() {
+                currentCategory = $(this).data("category");
+                
+                // UI 업데이트
+                $(".chip").removeClass("active");
+                $(this).addClass("active");
+
+                // 데이터 요청
+                loadProducts(currentCategory, currentSortType);
+            });
+
+            // [정렬 필터 버튼 토글]
+            $("#filterBtn").click(function(e) {
+                e.stopPropagation();
+                $("#sortDropdown").toggle();
+            });
+
+            // [외부 클릭 시 드롭다운 닫기]
+            $(document).click(function() {
+                $("#sortDropdown").hide();
+            });
+
+            // [정렬 옵션 클릭]
+            $(".sort-item").click(function() {
+                currentSortType = $(this).data("sort");
+
+                // UI 업데이트
+                $(".sort-item").removeClass("active");
+                $(this).addClass("active");
+                $(".filter-text").text($(this).text());
+
+                // 데이터 요청
+                loadProducts(currentCategory, currentSortType);
+            });
+            
+            // [상품 카드 클릭 - 상세 페이지 이동] (추후 구현 예정)
+            // $(document).on('click', '.product-card', function() { ... });
+        }
+
+        /**
+         * ==========================================
+         * 5. 데이터 요청 함수 (AJAX)
+         * ==========================================
+         */
+        function loadProducts(category, sortType) {
+            // 로딩 중 UI 처리 (선택사항)
+
+            $.ajax({
+                url: "/product/list",
+                type: "GET",
+                data: { 
+                    cateCode: category, 
+                    sortType: sortType 
+                },
+                success: function(response) {
+                    $("#product-content").html(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error("상품 로드 실패:", error);
+                }
             });
         }
     </script>
