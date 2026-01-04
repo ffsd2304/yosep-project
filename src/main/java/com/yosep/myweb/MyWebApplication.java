@@ -7,10 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @SpringBootApplication
 @Slf4j
-public class DemoApplication {
+public class MyWebApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(MyWebApplication.class, args);
 	}
 
 }

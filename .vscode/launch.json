@@ -2,10 +2,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Spring Boot-DemoApplication<demo>",
+            "name": "Spring Boot-MyWebApplication<demo>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.yosep.myweb.DemoApplication",
+            "mainClass": "com.yosep.myweb.MyWebApplication",
             "projectName": "demo",
             "args": "",
             "envFile": "${workspaceFolder}/.env"

@@ -4,7 +4,6 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.yosep.myweb.product.service.ProductMapper">
-
     <select id="getProductList" resultType="ProductDTO" parameterType="map">
         SELECT 
             P.PROD_ID     AS prodId,
@@ -39,5 +38,30 @@
                 ORDER BY P.REG_DATE DESC, P.PROD_ID DESC 
             </otherwise>
         </choose>
+    </select>
+
+    <select id="getProductInfo" parameterType="String" resultType="ProductDTO">
+        SELECT 
+            PROD_ID          as prodId,
+            PROD_NAME        as prodName,
+            PROD_PRICE       as prodPrice,
+            PROD_RATING      as prodRating,
+            REVIEW_COUNT     as reviewCount,
+            DETAIL_FILE_NAME as detailFileName,  -- 아까 추가한 통이미지 컬럼
+            IMAGE_URL        as imageUrl         -- 기본 경로
+        FROM PRODUCT_MASTER
+        WHERE PROD_ID = #{prodId}
+    </select>
+
+    <select id="getSliderImages" parameterType="String" resultType="ProductImgDTO">
+        SELECT 
+            IMG_ID        as imgId,
+            FILE_PATH     as filePath,
+            ORIGINAL_NAME as originalName,
+            SORT_ORDER    as sortOrder
+        FROM PRODUCT_IMG
+        WHERE PROD_ID = #{prodId}
+        AND IMG_TYPE = 'SLIDE'  -- 슬라이더용만 가져오기
+        ORDER BY SORT_ORDER ASC
     </select>
 </mapper>
