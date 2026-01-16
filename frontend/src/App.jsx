@@ -1,32 +1,35 @@
+// src/App.jsx
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import './assets/css/style.css'; // 가장 먼저 로드하여 기본 베이스를 잡음
+import './assets/css/style.css';
+import BottomTab from './components/common/BottomTab'; // 1. 탭 바 import
+import CommonHeader from './components/common/CommonHeader'; // 헤더 가져오기
 import Login from './components/login/Login';
-import Main from './components/main/Main'; // 1. 메인 컴포넌트를 import 하세요.
-import ProductDetail from './components/product/ProductDetail'; // 상품 상세 화면
+import Main from './components/main/Main';
+import ProductDetail from './components/product/ProductDetail';
 
 function App() {
   return (
-    <BrowserRouter> {/* 2. 전체를 BrowserRouter로 감싸야 합니다. */}
-      <div className="App">
-        {/* 네비게이션 바나 헤더를 넣으면 모든 페이지에서 공통으로 보입니다. */}
+    <BrowserRouter>
+      {/* 1. 화면 전체 배경 (회색 등) */}
+      <div className="all-wrapper">
         
-        <main>
-          {/* 3. Routes가 주소창의 주소를 감시하다가 하나만 골라서 보여줍니다. */}
-          <Routes>
-            {/* 기본 주소일 때 로그인으로 보내기 */}
-            <Route path="/" element={<Navigate to="/store/login" />} />
-            
-            {/* /login 주소일 때 Login 컴포넌트 */}
-            <Route path="/store/login" element={<Login />} />
-            
-            {/* /main 주소일 때 Main 컴포넌트 */}
-            <Route path="/store/main" element={<Main />} />
-            {/* /productDetail 주소일 때 Main 컴포넌트 */}
-            <Route path="/store/productDetail/:prodId" element={<ProductDetail />} />
-          </Routes>
-        </main>
+        {/* 2. 실제 모바일 화면 틀 (중앙 정렬) */}
+        <div className="mobile-container">
+          
+          <CommonHeader />
 
-        {/* 푸터를 넣으면 모든 페이지에서 공통으로 보입니다. */}
+          <main className="content-area">
+            <Routes>
+              <Route path="/" element={<Navigate to="/store/login" />} />
+              <Route path="/store/login" element={<Login />} />
+              <Route path="/store/main" element={<Main />} />
+              <Route path="/store/productDetail/:prodId" element={<ProductDetail />} />
+            </Routes>
+          </main>
+
+          <BottomTab />
+
+        </div>
       </div>
     </BrowserRouter>
   );

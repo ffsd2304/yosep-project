@@ -3,6 +3,7 @@ import { Autoplay, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import api from '../../api/axios'; // 설정해둔 axios 인스턴스
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
+import { useHeader } from '../../context/HeaderContext'; // 리모컨 가져오기
 
 import ProductList from '../product/ProductList'; // 경로에 맞게 import
 
@@ -27,6 +28,12 @@ const Main = () => {
 
     // 드래그 스크롤을 위한 Ref
     const sliderRef = useRef(null);
+    const { setHeader } = useHeader(); // 리모컨 기능 중 '설정하기' 가져옴
+
+    useEffect(() => {
+        // 화면이 열릴 때(마운트 될 때) 실행
+        setHeader('Bot World', false); // 제목: Bot World, 뒤로가기: 숨김
+    }, []);
 
     // 2. 초기 데이터 로드 (배너, 카테고리)
     useEffect(() => {
@@ -120,6 +127,7 @@ const Main = () => {
 
     return (
         <div className="explore-container">
+            {/* <CommonHeader title="Bot World" showBack={false}/> */}
             {/* 1. 메인 배너 (Swiper) */}
             <Swiper
                 className="main-banner"

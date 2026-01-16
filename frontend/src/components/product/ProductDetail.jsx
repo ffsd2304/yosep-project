@@ -8,16 +8,26 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import api from '../../api/axios'; // 설정해둔 axios 인스턴스
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
+import { useCart } from '../../context/CartContext';
+import { useHeader } from '../../context/HeaderContext'; // 리모컨 가져오기
+
 
 const ProductDetail = () => {
 
     // prod: 상품 상세 정보 객체
     // sliderList: 슬라이더 이미지 배열
     const { prodId } = useParams();
-    
+    const { addToCart } = useCart(); // 아까 만든 훅 호출
+
     const [prod, setProd] = useState(null);
     const [sliderList, setSliderList] = useState([]);
     const [activeTab, setActiveTab] = useState('tab-1');
+    const {setHeader } = useHeader(); // 리모컨 기능 중 '설정하기' 가져옴
+
+    useEffect(() => {
+        // 화면이 열릴 때(마운트 될 때) 실행
+        setHeader('상품 상세', true); // 제목: Bot World, 뒤로가기: 숨김
+    }, []);
 
     useEffect(() => {
         const fetchInitProdData = async () => {
@@ -53,7 +63,6 @@ const ProductDetail = () => {
     }
     return (
         <div className="product-detail-wrap">
-            
             {/* 1. 상품 이미지 슬라이더 (Swiper) */}
             <div className="product-slider-container">
                 <Swiper
@@ -177,12 +186,17 @@ const ProductDetail = () => {
                     </div>
                 </div>
 
+                {/* 🔥 [핵심 추가] 버튼 높이만큼 빈 공간을 강제로 만들어주는 투명 박스 🔥 */}
+                <div className="bottom-spacer" style={{ height: '80px' }}></div>
+                
+                {/* 4. 하단 버튼 영역 (Fixed) */}
                 <div className="action-buttons">
-                    <button className="cart-btn">장바구니 담기</button>
+                    <button className="cart-btn" onClick={() => addToCart(prod)}>
+                        장바구니 담기
+                    </button>
                     <div className="button-divider"></div>
                     <button className="buy-btn">바로구매</button>
                 </div>
-
             </div>
         </div>
     );

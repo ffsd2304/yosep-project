@@ -2,7 +2,10 @@ import axios from 'axios';
 
 const api = axios.create({
     // 여기가 바로 contextRoot 역할을 합니다!
+    
+    //baseURL: 'http://10.0.2.2:8080',  // 앱 로컬 테스트용
     baseURL: 'http://localhost:8080', 
+    //baseURL: 'http://136.118.142.58:8080', 
     timeout: 5000, // 5초 이상 응답 없으면 중단
     headers: { 'Content-Type': 'application/json' },
     withCredentials: true

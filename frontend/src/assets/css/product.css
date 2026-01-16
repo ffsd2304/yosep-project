@@ -83,12 +83,15 @@
 
 /* product.css */
 
-/* 상세 페이지 전체 래퍼 */
+/* --- [수정] 전체 래퍼: 모바일 틀 너비에 맞춤 --- */
 .product-detail-wrap {
-    max-width: 600px; /* 모바일/쿠팡 느낌의 적절한 폭 */
-    margin: 0 auto;   /* 중앙 정렬 */
+    width: 100%;
+    margin: 0 auto;
     background-color: #fff;
-    padding-bottom: 100px !important; /* 버튼 영역만큼 공간을 비워둬야 마지막 내용까지 다 보입니다. */
+    /* 기존 padding-bottom은 유지하되, spacer를 추가했으므로 조금 줄여도 됩니다 */
+    padding-bottom: 20px; 
+    /* 중요: 내용이 넘치면 스크롤이 생겨야 함 */
+    overflow-y: auto; 
 }
 
 /* --- 1. 슬라이더 영역 --- */
@@ -203,20 +206,41 @@
     color: #AE0000; /* 요셉님이 고르신 빨간색 */
 }
 
-/* 버튼 영역 (선택사항) */
+/* --- [수정] 하단 구매 버튼 영역: 모바일 틀 안에 가두기 --- */
 .action-buttons {
     position: fixed;
-    bottom: 0;
+    /* 바텀 탭 높이(65px) 만큼 위로 올려야 가려지지 않음 */
+    bottom: 65px; 
+    
+    /* 화면 중앙 정렬 마법 (BottomTab과 동일한 원리) */
+    width: 100%;
+    max-width: 450px;       /* style.css의 mobile-container와 동일하게! */
     left: 50%;
     transform: translateX(-50%);
-    width: 100%;
-    max-width: 600px;
+    
     display: flex;
-    align-items: center; /* 세로 중앙 정렬 */
-    padding: 12px 15px;
+    align-items: center;
+    padding: 6px 15px 12px;
     background-color: #ffffff;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* 상단 그림자 */
-    z-index: 1000;
+    /* 상단 그림자 */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); 
+    z-index: 2000 !important;
+}
+
+/* 🔥 [추가] 버튼 윗부분을 자연스럽게 흐리게 만드는 그라데이션 효과 🔥 */
+.action-buttons::before {
+    content: "";
+    position: absolute;
+    top: -10px; /* 버튼 박스보다 30px 위로 올림 */
+    left: 0;
+    width: 100%;
+    height: 10px; /* 그라데이션 높이 */
+    
+    /* 투명(위) -> 흰색(아래)으로 변하는 그라데이션 */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+    
+    /* 중요: 이 효과가 클릭을 방해하지 않도록 설정 */
+    pointer-events: none; 
 }
 
 .action-buttons button {
@@ -293,10 +317,12 @@
     transform: scale(1.1); /* 활성화된 점만 살짝 키워주면 더 예쁩니다 */
 }
 
-/* --- 탭 메뉴 스타일 --- */
+/* 탭 컨테이너가 잘리지 않도록 높이 자동 설정 */
 .tab-container {
     margin-top: 20px;
     width: 100%;
+    height: auto;       /* 높이 제한 풀기 */
+    overflow: visible;  /* 내용물이 보이도록 설정 */
 }
 
 .tabs {
@@ -305,15 +331,24 @@
     padding: 0;
     margin: 0;
     border-bottom: 1px solid #ddd;
-    background-color: #fff; /* [필수] 배경이 투명하면 스크롤될 때 뒤에 글자가 겹쳐 보입니다 */
     
-    /* ▼▼▼ 상단 고정(Sticky) 핵심 코드 ▼▼▼ */
-    position: sticky;        /* 스크롤 위치에 따라 고정 */
-    position: -webkit-sticky; /* 사파리 브라우저 호환 */
-    top: 0;                  /* 화면 최상단(0px)에 닿으면 고정 */
-    z-index: 900;            /* 다른 내용물보다 위에 보이도록 설정 (하단 구매버튼 1000보다는 낮게) */
+    /* [핵심 1] 배경색 필수! 투명하면 뒤에 글자가 비쳐서 지저분해 보입니다. */
+    background-color: #fff; 
     
-    /* (선택사항) 고정되었을 때 그림자를 주어 입체감 살리기 */
+    /* [핵심 2] 스티키 포지션 설정 */
+    position: sticky;        
+    position: -webkit-sticky; /* 사파리 호환 */
+
+    /* 🔥 [가장 중요] 헤더 높이만큼 띄우기 🔥 
+       상단 헤더("Bot World") 높이가 50px~60px 정도라면 그만큼 값을 줘야 합니다.
+       만약 헤더가 고정이 아니라 스크롤이랑 같이 올라가서 사라진다면 'top: 0'으로 두셔도 됩니다.
+    */
+    top: 56px;  /* 예: 헤더 높이가 56px인 경우. (0으로 하면 천장에 붙음) */
+    
+    /* [핵심 3] 다른 요소들보다 위에 오도록 z-index 높이기 */
+    z-index: 990;  
+    
+    /* (선택사항) 고정되었을 때 그림자 효과 */
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
@@ -344,6 +379,8 @@
     font-size: 14px;
     line-height: 1.6;
     color: #333;
+    overflow: visible; 
+    padding-bottom: 20px; /* 내용 끝부분 여유 */
 }
 
 /* 선택된 탭의 내용만 보이기 */

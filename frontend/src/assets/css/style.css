@@ -47,6 +47,40 @@ body {
     align-items: center;
 }
 
+/* 전체 배경 */
+.all-wrapper {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+}
+
+/* 모바일 화면 틀 */
+.mobile-container {
+  width: 100%;
+  max-width: 450px; /* 모바일 최대 너비 제한 */
+  min-height: 100vh;
+  background-color: #ffffff;
+  position: relative; /* 자식들의 기준점 */
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+/* 헤더와 바텀을 브라우저가 아닌 .mobile-container에 가두기 */
+.common-header, .bottom-tab {
+  position: absolute; /* fixed 대신 absolute 사용 가능 (스크롤 시 같이 움직이게 하려면) */
+  /* 또는 fixed를 유지하고 싶다면 아래처럼 설정 */
+  position: fixed;
+  width: 100%;
+  max-width: 450px; /* 부모와 동일한 너비 부여 */
+  left: auto; 
+  right: auto;
+}
+
+.content-area {
+  padding-top: 0; /* 50px를 0으로 변경 */
+  padding-bottom: 65px; /* 바텀 높이 */
+}
+
 /* 메인 앱 컨테이너 (모바일 뷰 프레임) */
 .explore-container {
     width: 100%;
@@ -65,8 +99,8 @@ body {
    2. 로그인 & 회원가입 컴포넌트
    ========================================= */
 .login-container {
-    width: 400px; /* 홀쭉하다면 직접 너비를 지정해주는게 가장 확실합니다! */
-    margin: 100px auto; /* 화면 중앙 배치 */
+    width: 90%; /* 화면이 좁으면 알아서 90%만큼만 차지해라! */
+    margin: 0 auto;
     max-width: 400px;
     background-color: var(--color-white);
     padding: 30px;
@@ -159,14 +193,22 @@ body {
 .modal-overlay {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100vw;   /* 전체 너비 */
-    height: 100vh;  /* 전체 높이 */
-    background: rgba(0, 0, 0, 0.5); /* 🔴 반드시 rgba로 반투명 처리가 되어야 합니다! */
+    
+    /* ▼▼▼ [수정] 브라우저 전체가 아니라 '모바일 틀' 안에 가두기 ▼▼▼ */
+    left: 50%;
+    transform: translateX(-50%); /* 화면 중앙으로 이동 */
+    width: 100%;                 /* 너비는 100% */
+    max-width: 450px;            /* 단, 450px를 넘지 않음 (모바일 틀 크기) */
+    height: 100%;                /* 높이는 화면 전체 */
+    /* ▲▲▲ ---------------------------------------------------- ▲▲▲ */
+
+    background: rgba(0, 0, 0, 0.5); /* 반투명 검은 배경 */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;  /* 다른 요소보다 항상 위에 */
+    
+    /* z-index는 가장 높아야 함 (하단 탭 9999, 버튼 2000보다 높게) */
+    z-index: 10000; 
 }
 
 .modal-content {
@@ -468,3 +510,4 @@ body {
     color: var(--color-text-main);
     margin-top: 4px;
 }
+

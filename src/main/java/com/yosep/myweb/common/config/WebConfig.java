@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")               // 모든 주소에 대해
-                .allowedOrigins("http://localhost:5173") // 리액트 서버 주소(포트) 허용
+                .allowedOrigins("http://localhost:5173", "http://10.0.2.2:5173", "http://10.101.66.154:5173") // 리액트 서버 주소(포트) 허용
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 동작
                 .allowCredentials(true); // 쿠키/세션 정보 허용
     }

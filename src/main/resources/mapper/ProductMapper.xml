@@ -9,6 +9,7 @@
             P.PROD_ID     AS prodId,
             P.CATE_CODE   AS cateCode,
             P.PROD_NAME   AS prodName,
+            P.PROD_DESC   AS prodDesc,
             P.PROD_PRICE  AS prodPrice,
             P.FILE_NAME   AS fileName,
             P.IMAGE_URL   AS imageUrl,
