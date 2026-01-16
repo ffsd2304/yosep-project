@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yosep.myweb.menu.service.MenuMapper">
+    <resultMap id="MenuResultMap" type="com.yosep.myweb.menu.service.MenuMasterDto">
+        <id property="masterId" column="masterId"/>      <result property="masterName" column="masterName"/>
+        
+        <collection property="subMenuList" ofType="com.yosep.myweb.menu.service.MenuDetailDto">
+            <id property="detailId" column="detailId"/>  <result property="detailName" column="detailName"/>
+            <result property="linkUrl" column="linkUrl"/>
+        </collection>
+    </resultMap>
+    <select id="getMenuList" resultMap="MenuResultMap">
+        SELECT 
+            m.MASTER_ID   AS masterId,     /* 대분류 ID (PK) */
+            m.MENU_NAME   AS masterName,   /* 대분류 메뉴명 */
+            d.DETAIL_ID   AS detailId,     /* 상세분류 ID (PK) */
+            d.MENU_NAME   AS detailName,   /* 상세분류 메뉴명 */
+            d.LINK_URL    AS linkUrl       /* 이동할 URL */
+        FROM MENU_MASTER m
+        LEFT JOIN MENU_DETAIL d 
+                ON m.MASTER_ID = d.MASTER_ID 
+                AND d.USE_YN = 'Y'            /* 사용 중인 상세메뉴만 결합 */
+        WHERE m.USE_YN = 'Y'                 /* 사용 중인 대분류만 조회 */
+        ORDER BY m.SORT_ORDER ASC,           /* 대분류 정렬 순서 */
+                d.SORT_ORDER ASC            /* 상세분류 정렬 순서 */
+    </select>
+
+</mapper>

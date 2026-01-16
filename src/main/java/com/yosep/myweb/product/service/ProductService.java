@@ -14,4 +14,12 @@ public class ProductService {
     public List<ProductDTO> getProductList(Map<String, Object> params) {
         return productMapper.getProductList(params);
     }
+    // 상품 상세 조회
+    public ProductDTO getProductInfo(String prodId) {
+        return productMapper.getProductInfo(prodId);
+    }
+    // 슬라이더 이미지 여러 개 가져오기
+    public List<ProductImgDTO> getSliderImages(String prodId) {
+        return productMapper.getSliderImages(prodId);
+    }
 }

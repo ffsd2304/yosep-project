@@ -1,0 +1,102 @@
+/* src/assets/css/BottomTab.css */
+/* 아이콘 기본 공통 스타일 */
+.icon {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 4px;
+  /* 기본적으로 약간 투명하거나 회색 톤으로 설정 가능 */
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+/* 활성화되었을 때 스타일 */
+.active .icon {
+  opacity: 1;
+  filter: none;
+}
+
+/* 각 아이콘별 이미지 경로 설정 (CSS 파일 기준 상대 경로) */
+.icon.home {
+  background-image: url('../images/icon/home_icon.png');
+}
+
+.icon.cart {
+  background-image: url('../images/icon/cart_icon.png');
+}
+
+.icon.mypage {
+  background-image: url('../images/icon/myInfo_icon.png');
+}
+
+.bottom-tab {
+  position: fixed;
+  bottom: 0;
+  
+  /* ▼▼▼ [수정] 모바일 틀 안에 가두기 위한 핵심 코드 ▼▼▼ */
+  width: 100%;              /* 일단 꽉 채우되 */
+  max-width: 450px;         /* 모바일 컨테이너 최대 너비를 넘지 않게 제한 */
+  left: 50%;                /* 화면 왼쪽에서 50% 지점으로 이동 */
+  transform: translateX(-50%); /* 요소 크기의 절반만큼 다시 왼쪽으로 당겨서 '정중앙' 맞춤 */
+  /* ▲▲▲ --------------------------------------- ▲▲▲ */
+
+  height: 65px; 
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #f0f0f0; 
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03); 
+  z-index: 9999;
+}
+
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  cursor: pointer; /* 마우스 올렸을 때 손가락 표시 추가 */
+  transition: all 0.2s ease;
+}
+
+/* 활성화된 탭 색상 */
+.tab-item.active .label, 
+.tab-item.active .icon {
+  color: #f39c12; 
+}
+
+.icon { 
+  font-size: 22px; 
+  margin-bottom: 2px;
+}
+
+.label { 
+  font-size: 11px; 
+  font-weight: 500;
+  color: #888; 
+}
+
+.icon-wrapper {
+  position: relative;
+  display: flex;      /* 아이콘 정렬을 위해 추가 */
+  justify-content: center;
+}
+
+.badge {
+  position: absolute;
+  top: -5px;          /* 위치 미세 조정 */
+  right: -8px;        /* 위치 미세 조정 */
+  background-color: #FFD400;
+  color: white;
+  font-size: 10px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff; 
+}

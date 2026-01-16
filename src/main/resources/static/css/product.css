@@ -50,6 +50,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
+    cursor: pointer; 
 }
 
 .product-img-box {
@@ -74,20 +75,260 @@
     padding: 12px 8px;
 }
 
-.product-title {
-    font-size: 14px;
-    color: #222;
-    margin-bottom: 6px;
-    line-height: 1.4;
-    height: 40px; /* 두 줄 높이 고정 */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
 .product-price-tag {
     font-size: 16px;
     font-weight: 700;
     color: #111;
+}
+
+/* product.css */
+
+/* 상세 페이지 전체 래퍼 */
+.product-detail-wrap {
+    max-width: 600px; /* 모바일/쿠팡 느낌의 적절한 폭 */
+    margin: 0 auto;   /* 중앙 정렬 */
+    background-color: #fff;
+    padding-bottom: 100px !important; /* 버튼 영역만큼 공간을 비워둬야 마지막 내용까지 다 보입니다. */
+}
+
+/* --- 1. 슬라이더 영역 --- */
+.product-slider-container {
+    width: 100%;
+    aspect-ratio: 4 / 3; 
+    position: relative;
+    overflow: hidden;
+}
+
+.slider-wrapper {
+    display: flex;
+    width: 100%;
+    transition: transform 0.5s ease-in-out; /* 부드러운 슬라이딩 효과 */
+}
+
+.slider-wrapper img {
+    width: 100%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+/* 슬라이드 점(인디케이터) 컨테이너 */
+.slider-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+/* 점 기본 스타일 */
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.2); /* 기본 회색 */
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* 활성화된 점 (요청하신 노란색!) */
+.dot.active {
+    background-color: #FFD700; /* 쨍한 노란색 (Gold) */
+    opacity: 1;
+}
+
+/* --- 2. 상품 정보 영역 --- */
+.product-info-section {
+    /* 상단 20px, 좌우 20px, 하단 100px (하단 고정 버튼 때문) */
+    padding: 20px 20px 100px 20px !important;
+}
+
+/* 상품명 */
+.product-title {
+    font-size: 19px; /* 살짝 키움 */
+    margin-bottom: 15px; /* 별점과의 간격 */
+    line-height: 1.4;
+    color: #111;
+}
+
+/* 별점 컨테이너 */
+.rating-container {
+    display: flex;
+    align-items: center;
+    margin-top: 15px; /* 상품명과 간격 */
+    margin-bottom: 15px; /* 가격과의 간격 */
+}
+
+.stars {
+    color: #FFA425; /* 오렌지색 계열 (쿠팡 별점 색상) */
+    font-size: 16px;
+    letter-spacing: -2px; /* 별 사이 간격 좁게 */
+    margin-right: 8px;
+}
+
+.review-count {
+    color: #346AFF; /* 쿠팡 스타일의 파란색 링크 느낌 */
+    font-size: 13px;
+    cursor: pointer; /* 클릭 가능한 느낌 */
+}
+
+/* 가격 컨테이너 스타일 보정 */
+.price-container {
+    border-top: 1px solid #f4f4f4; /* 더 희미한 선으로 고급스럽게 */
+    padding-top: 20px;
+}
+
+.discount-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #AE0000; /* 요셉님이 고르신 빨간색 */
+}
+
+/* 버튼 영역 (선택사항) */
+.action-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    align-items: center; /* 세로 중앙 정렬 */
+    padding: 12px 15px;
+    background-color: #ffffff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* 상단 그림자 */
+    z-index: 1000;
+}
+
+.action-buttons button {
+    flex: 1;
+    height: 50px;
+    border: none;
+    border-radius: 8px; /* 둥근 모서리 */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 두 버튼 사이의 희미한 경계선 */
+.button-divider {
+    width: 1px;
+    height: 24px; /* 경계선 높이 */
+    background-color: #eeeeee; /* 희미한 회색 */
+    margin: 0 10px; /* 좌우 간격 */
+}
+
+/* 1. 장바구니 담기 버튼 (흰색 배경의 입체감 있는 버튼) */
+.cart-btn {
+    background-color: #ffffff;
+    color: #111111;
+    border: 1px solid #dddddd !important; /* 테두리를 주어 버튼 형태 강조 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03); /* 미세한 입체감 */
+}
+
+.cart-btn:hover {
+    background-color: #f9f9f9;
+}
+
+/* 2. 바로구매 버튼 (노란색 배경의 꽉 찬 버튼) */
+.buy-btn {
+    background-color: #FFCC00;
+    color: #111111;
+    box-shadow: 0 2px 4px rgba(255, 204, 0, 0.2); /* 노란색 계열 그림자 */
+}
+
+.buy-btn:hover {
+    background-color: #f0c000;
+}
+
+/* 2. 점(Pagination) 컨테이너 중앙 정렬 */
+.swiper-pagination {
+    width: 100% !important; /* 전체 너비를 차지하게 함 */
+    bottom: 15px !important; /* 하단에서 15px 띄움 */
+    left: 0 !important;
+    display: flex !important;
+    justify-content: center !important; /* 가로 중앙 정렬 핵심! */
+    align-items: center !important;
+    gap: 8px; /* 점들 사이의 간격 */
+}
+
+/* 3. 개별 점 스타일 (기존 유지 및 보정) */
+.swiper-pagination-bullet {
+    width: 10px !important;
+    height: 10px !important;
+    margin: 0 !important; /* flex gap을 사용하므로 기본 마진 제거 */
+    background: rgba(0, 0, 0, 0.2) !important;
+    opacity: 1 !important;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+/* 4. 활성화된 노란색 점 */
+.swiper-pagination-bullet-active {
+    background: #FFCC00 !important; 
+    transform: scale(1.1); /* 활성화된 점만 살짝 키워주면 더 예쁩니다 */
+}
+
+/* --- 탭 메뉴 스타일 --- */
+.tab-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #ddd;
+    background-color: #fff; /* [필수] 배경이 투명하면 스크롤될 때 뒤에 글자가 겹쳐 보입니다 */
+    
+    /* ▼▼▼ 상단 고정(Sticky) 핵심 코드 ▼▼▼ */
+    position: sticky;        /* 스크롤 위치에 따라 고정 */
+    position: -webkit-sticky; /* 사파리 브라우저 호환 */
+    top: 0;                  /* 화면 최상단(0px)에 닿으면 고정 */
+    z-index: 900;            /* 다른 내용물보다 위에 보이도록 설정 (하단 구매버튼 1000보다는 낮게) */
+    
+    /* (선택사항) 고정되었을 때 그림자를 주어 입체감 살리기 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.tab-link {
+    flex: 1; /* 3등분으로 똑같이 넓이 차지 */
+    text-align: center;
+    padding: 15px 0;
+    font-size: 16px;
+    color: #888; /* 선택 안 된 탭은 회색 */
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent; /* 기본 밑줄 투명 */
+}
+
+/* 선택된(Active) 탭 스타일 */
+.tab-link.current {
+    color: #111; /* 글자 검은색 */
+    font-weight: bold;
+    border-bottom: 3px solid #FFCC00; /* 요셉 브랜드 노란색 밑줄! */
+}
+
+/* 탭 내용 영역 */
+.tab-content {
+    display: none; /* 기본적으로 숨김 */
+    padding: 20px 0; /* 내용 여백 */
+    min-height: 200px; /* 내용이 없어도 최소 높이 유지 */
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* 선택된 탭의 내용만 보이기 */
+.tab-content.current {
+    display: block;
+    animation: fadeIn 0.3s ease; /* 부드럽게 나타나는 효과 */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
