@@ -19,15 +19,12 @@
     cursor: pointer;
 }
 
-<<<<<<< HEAD
 .header-left.disabled {
     visibility: hidden;      /* 공간은 차지하되 눈에 안 보임 (제목 중앙 정렬 유지) */
     pointer-events: none;    /* 클릭 자체가 불가능하게 뚫려버림 */
     cursor: default;         /* 손가락 모양 안 나옴 */
 }
 
-=======
->>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
 .icon-back {
     font-size: 20px;
     font-weight: bold;
