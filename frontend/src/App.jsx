@@ -1,12 +1,21 @@
+<<<<<<< HEAD
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import './assets/css/style.css';
 import BottomTab from './components/common/BottomTab';
 import CommonHeader from './components/common/CommonHeader';
+=======
+// src/App.jsx
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import './assets/css/style.css';
+import BottomTab from './components/common/BottomTab'; // 1. 탭 바 import
+import CommonHeader from './components/common/CommonHeader'; // 헤더 가져오기
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
 import Login from './components/login/Login';
 import Main from './components/main/Main';
 import CartPage from './components/product/CartPage';
 import ProductDetail from './components/product/ProductDetail';
 
+<<<<<<< HEAD
 /**
  * ✅ 1. 실제 UI 레이아웃과 경로 감지 로직을 담은 컴포넌트
  * 이 컴포넌트는 BrowserRouter 내부에서 렌더링되므로 useLocation 사용이 가능합니다.
@@ -51,6 +60,33 @@ function App() {
   return (
     <BrowserRouter>
       <AppContent />
+=======
+function App() {
+  return (
+    <BrowserRouter>
+      {/* 1. 화면 전체 배경 (회색 등) */}
+      <div className="all-wrapper">
+        
+        {/* 2. 실제 모바일 화면 틀 (중앙 정렬) */}
+        <div className="mobile-container">
+          
+          <CommonHeader />
+
+          <main className="content-area">
+            <Routes>
+              <Route path="/" element={<Navigate to="/store/login" />} />
+              <Route path="/store/login" element={<Login />} />
+              <Route path="/store/main" element={<Main />} />
+              <Route path="/store/cart" element={<CartPage />} />
+              <Route path="/store/productDetail/:prodId" element={<ProductDetail />} />
+            </Routes>
+          </main>
+
+          <BottomTab />
+
+        </div>
+      </div>
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
     </BrowserRouter>
   );
 }

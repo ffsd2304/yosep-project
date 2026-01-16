@@ -34,6 +34,7 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => [...prevItems, { ...product, quantity: 1 , checked : true}]);
   };
 
+<<<<<<< HEAD
   const removeFromCart = (target) => {
   setCartItems((prevItems) => {
     // 1. 들어온 target이 배열인지 확인합니다.
@@ -44,6 +45,12 @@ export const CartProvider = ({ children }) => {
     return prevItems.filter((item) => !idsToRemove.includes(item.prodId));
   });
 };
+=======
+  // 장바구니 삭제 함수
+  const removeFromCart = (productId) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
+  };
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
 
   /**
    * [추가] 장바구니 아이템 업데이트 함수
