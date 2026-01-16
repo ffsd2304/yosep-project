@@ -90,14 +90,6 @@
     background-color: #fff;
     /* 기존 padding-bottom은 유지하되, spacer를 추가했으므로 조금 줄여도 됩니다 */
     padding-bottom: 20px; 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-    /* 중요: 내용이 넘치면 스크롤이 생겨야 함 */
-    overflow-y: auto; 
->>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
->>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
 }
 
 /* --- 1. 슬라이더 영역 --- */
