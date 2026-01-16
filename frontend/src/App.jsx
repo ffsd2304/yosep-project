@@ -5,6 +5,7 @@ import BottomTab from './components/common/BottomTab'; // 1. 탭 바 import
 import CommonHeader from './components/common/CommonHeader'; // 헤더 가져오기
 import Login from './components/login/Login';
 import Main from './components/main/Main';
+import CartPage from './components/product/CartPage';
 import ProductDetail from './components/product/ProductDetail';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
               <Route path="/" element={<Navigate to="/store/login" />} />
               <Route path="/store/login" element={<Login />} />
               <Route path="/store/main" element={<Main />} />
+              <Route path="/store/cart" element={<CartPage />} />
               <Route path="/store/productDetail/:prodId" element={<ProductDetail />} />
             </Routes>
           </main>

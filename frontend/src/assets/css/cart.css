@@ -264,3 +264,65 @@
     background-color: #FFCC00;
     border-color: #FFCC00;
 }
+
+/* ▼▼▼ [수정] 장바구니 비었을 때 화면 스타일 (Empty View) ▼▼▼ */
+.cart-page-wrapper.empty-view {
+    /* 1. 배경색을 하얀색으로 변경 (기존 회색 덮어쓰기) */
+    background-color: #ffffff !important; 
+    
+    /* 2. 화면 중앙 정렬을 위한 Flexbox 설정 */
+    display: flex;
+    flex-direction: column; /* 위아래로 쌓기 */
+    justify-content: center; /* 세로 중앙 정렬 */
+    align-items: center;     /* 가로 중앙 정렬 */
+    
+    /* 3. 높이 확보 (중요!) */
+    /* 전체 화면 높이(100vh)에서 헤더(약 50px)와 바텀탭(65px)을 뺀 만큼 꽉 채워야 중앙에 옵니다 */
+    min-height: calc(100vh - 115px); 
+    text-align: center;
+}
+
+/* 아이콘 영역 */
+.empty-icon-area {
+    margin-bottom: 25px;
+}
+
+/* 아이콘 스타일 */
+.empty-icon {
+    font-size: 80px; /* 아이콘 크기 키움 */
+    color: #e0e0e0;  /* 은은한 회색 */
+    line-height: 1;
+}
+
+/* 제목 폰트 */
+.empty-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 10px;
+}
+
+/* 설명 폰트 */
+.empty-desc {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 30px;
+}
+
+/* 쇼핑하러 가기 버튼 */
+.btn-go-shopping {
+    padding: 14px 40px; /* 버튼 크기 키움 */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-go-shopping:hover {
+    background-color: #f9f9f9;
+    border-color: #bbb;
+}

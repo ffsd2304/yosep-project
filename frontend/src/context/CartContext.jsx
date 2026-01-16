@@ -31,7 +31,7 @@ export const CartProvider = ({ children }) => {
     }
 
     // 4. 존재하지 않을 때만 실행됨: 새로 추가 (초기 수량 1)
-    setCartItems((prevItems) => [...prevItems, { ...product, quantity: 1 }]);
+    setCartItems((prevItems) => [...prevItems, { ...product, quantity: 1 , checked : true}]);
   };
 
   // 장바구니 삭제 함수
@@ -39,8 +39,30 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
   };
 
+  /**
+   * [추가] 장바구니 아이템 업데이트 함수
+   * @param {number} prodId - 상품 ID
+   * @param {object} newAttributes - 변경할 속성 (예: { checked: false } 또는 { quantity: 5 })
+   */
+  const updateCartItem = (prodId, newAttributes) => {
+    setCartItems((prevItems) => 
+      prevItems.map((item) => 
+        item.prodId === prodId ? { ...item, ...newAttributes } : item
+      )
+    );
+  };
+
+  /**
+   * [추가] 장바구니 전체 업데이트 함수 (전체 선택/해제용)
+   */
+  const updateAllCartItems = (newAttributes) => {
+    setCartItems((prevItems) => 
+      prevItems.map((item) => ({ ...item, ...newAttributes }))
+    );
+  };
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateCartItem, updateAllCartItems }}>
       {children}
     </CartContext.Provider>
   );

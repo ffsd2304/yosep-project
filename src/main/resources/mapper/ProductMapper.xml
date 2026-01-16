@@ -9,7 +9,6 @@
             P.PROD_ID     AS prodId,
             P.CATE_CODE   AS cateCode,
             P.PROD_NAME   AS prodName,
-            P.PROD_DESC   AS prodDesc,
             P.PROD_PRICE  AS prodPrice,
             P.FILE_NAME   AS fileName,
             P.IMAGE_URL   AS imageUrl,
@@ -45,11 +44,13 @@
         SELECT 
             PROD_ID          as prodId,
             PROD_NAME        as prodName,
+            PROD_DESC        as prodDesc,
             PROD_PRICE       as prodPrice,
             PROD_RATING      as prodRating,
             REVIEW_COUNT     as reviewCount,
             DETAIL_FILE_NAME as detailFileName,  -- 아까 추가한 통이미지 컬럼
-            IMAGE_URL        as imageUrl         -- 기본 경로
+            IMAGE_URL        as imageUrl,         -- 기본 경로
+            FILE_NAME        as fileName
         FROM PRODUCT_MASTER
         WHERE PROD_ID = #{prodId}
     </select>

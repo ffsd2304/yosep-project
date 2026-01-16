@@ -1,40 +1,53 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 페이지 이동 훅 추가
 import '../../assets/css/cart.css'; // 아래 CSS 파일 생성 필요
+import { useCart } from '../../context/CartContext';
 import { useHeader } from '../../context/HeaderContext';
 
 const CartPage = () => {
   const { setHeader } = useHeader();
   const navigate = useNavigate();
-  // 1. 초기 상태를 빈 배열로 시작
-  const [cartItems, setCartItems] = useState([]);
+  
+  // 1. [핵심] Context에서 모든 데이터와 함수를 직접 가져옵니다.
+  const { 
+    cartItems, 
+    updateCartItem, 
+    updateAllCartItems, 
+    removeFromCart, 
+    removeCheckedItems 
+  } = useCart();
 
   // 헤더 설정
   useEffect(() => {
     setHeader('장바구니', true);
   }, []);
 
-  // 2. [핵심] 화면이 열릴 때 localStorage에서 데이터 가져오기
-  useEffect(() => {
-    const storedCart = localStorage.getItem('shopping_cart');
-    
-    if (storedCart) {
-      try {
-        const parsedCart = JSON.parse(storedCart);
-        // 배열인지 확인 후 상태 업데이트
-        if (Array.isArray(parsedCart)) {
-          setCartItems(parsedCart);
-        }
-      } catch (e) {
-        console.error("장바구니 데이터 파싱 오류", e);
-      }
-    }
-  }, []);
+  // 2. 전체 선택 상태 계산 (항상 Context의 cartItems 기준으로 계산됨)
+  const isAllChecked = cartItems.length > 0 && cartItems.every((item) => item.checked);
 
-  // 총 금액 계산 (단순 표시용)
-  const totalAmount = cartItems.reduce((acc, item) => item.checked ? acc + (item.price * item.quantity) : acc, 0);
-  const shippingFee = totalAmount > 50000 ? 0 : 3000; // 5만원 이상 무료배송 예시
+  // 전체 선택 핸들러
+  const handleSelectAll = () => {
+    updateAllCartItems({ checked: !isAllChecked });
+  };
+
+  // 개별 아이템 토글 핸들러
+  const handleToggleItem = (prodId, currentChecked) => {
+    updateCartItem(prodId, { checked: !currentChecked });
+  };
+
+  // 이미지 에러 핸들러
+  const handleImageError = (e) => {
+    e.target.src = '/images/no-image.png';
+  };
+
+  // 3. 금액 계산 (Context 데이터 기준)
+  const totalAmount = cartItems.reduce((acc, item) => {
+    return item.checked ? acc + (Number(item.prodPrice || 0) * Number(item.quantity || 1)) : acc;
+  }, 0);
+
+  const shippingFee = (totalAmount === 0 || totalAmount >= 50000) ? 0 : 3000;
   const finalAmount = totalAmount + shippingFee;
+  
   if (cartItems.length === 0) {
     return (
       <div className="cart-page-wrapper empty-view">
@@ -57,7 +70,11 @@ const CartPage = () => {
       {/* 1. 상단 전체 선택 바 */}
       <div className="cart-controls">
         <label className="checkbox-group">
-            <input type="checkbox" defaultChecked />
+            <input 
+                  type="checkbox"  
+                  checked={isAllChecked} 
+                  onChange={handleSelectAll}
+                />
             <span className="custom-check"></span>
             <span className="label-text">전체선택</span>
         </label>
@@ -67,11 +84,15 @@ const CartPage = () => {
       {/* 2. 장바구니 리스트 */}
       <div className="cart-list">
         {cartItems.map((item) => (
-          <div key={item.id} className="cart-item">
+          <div key={item.prodId} className="cart-item">
             {/* 체크박스 */}
             <div className="item-check">
                <label className="checkbox-group">
-                  <input type="checkbox" checked={item.checked} readOnly />
+                  <input
+                        type="checkbox"
+                        checked={item.checked} 
+                        onChange={() => handleToggleItem(item.prodId)}
+                   />
                   <span className="custom-check"></span>
                </label>
             </div>
@@ -79,10 +100,15 @@ const CartPage = () => {
             {/* 상품 정보 영역 */}
             <div className="item-content">
               <div className="item-top">
-                 <img src={item.image} alt={item.name} className="item-thumb" />
+                 <img 
+                     src={`${item.imageUrl}${item.fileName}`}
+                     alt={item.prodName}
+                     className="item-thumb" 
+                     onError={handleImageError}
+                  />
                  <div className="item-text">
-                    <h4 className="item-title">{item.name}</h4>
-                    <p className="item-option">{item.option}</p>
+                    <h4 className="item-title">{item.prodName}</h4>
+                    <p className="item-option">{item.prodDesc}</p>
                  </div>
                  <button className="btn-remove-item">×</button>
               </div>
@@ -96,7 +122,7 @@ const CartPage = () => {
                  </div>
                  {/* 가격 */}
                  <div className="item-price">
-                    {(item.price * item.quantity).toLocaleString()}원
+                    {(item.prodPrice * item.quantity).toLocaleString()}원
                  </div>
               </div>
             </div>
