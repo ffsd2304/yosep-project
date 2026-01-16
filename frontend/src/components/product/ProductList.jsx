@@ -9,7 +9,20 @@ const ProductList = ({ products }) => {
 
     // 2. 상품 상세 이동 핸들러 (jQuery click 이벤트 대체)
     const handleProductClick = (prodId) => {
+<<<<<<< HEAD
         navigate(`/store/productDetail/${prodId}`);
+=======
+<<<<<<< HEAD
+        navigate(`/store/productDetail/${prodId}`);
+=======
+        console.log("클릭한 상품 ID (React):", prodId);
+        if (prodId) {
+            navigate(`/store/productDetail/${prodId}`);
+        } else {
+            alert("상품 정보를 찾을 수 없습니다.");
+        }
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
     };
 
     // 3. 이미지 에러 핸들러 (onerror 대체)

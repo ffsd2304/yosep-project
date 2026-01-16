@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/CommonHeader.css';
 import { useHeader } from '../../context/HeaderContext'; // 방금 만든 훅 import
@@ -44,3 +45,5 @@ const CommonHeader = () => {
 };
 
 export default CommonHeader;
+=======
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead

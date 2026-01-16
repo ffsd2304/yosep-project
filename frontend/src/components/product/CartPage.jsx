@@ -3,11 +3,23 @@ import { useNavigate } from 'react-router-dom'; // 페이지 이동 훅 추가
 import '../../assets/css/cart.css'; // 아래 CSS 파일 생성 필요
 import { useCart } from '../../context/CartContext';
 import { useHeader } from '../../context/HeaderContext';
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
 import { useModal } from "../../context/ModalContext";
 
 const CartPage = () => {
   const { setHeader } = useHeader();
   const { openModal } = useModal();
+<<<<<<< HEAD
+=======
+=======
+
+const CartPage = () => {
+  const { setHeader } = useHeader();
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
   const navigate = useNavigate();
   
   // 1. [핵심] Context에서 모든 데이터와 함수를 직접 가져옵니다.
@@ -37,6 +49,10 @@ const CartPage = () => {
     updateCartItem(prodId, { checked: !currentChecked });
   };
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
    const handleRemoveSelected = () => {
       // 1. 체크된(checked === true) 상품만 골라냅니다.
       // 2. 그 상품들의 prodId만 추출해서 배열로 만듭니다. (예: [101, 103, 105])
@@ -53,6 +69,11 @@ const CartPage = () => {
       removeFromCart(selectedIds);
    };
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
   // 이미지 에러 핸들러
   const handleImageError = (e) => {
     e.target.src = '/images/no-image.png';
@@ -96,7 +117,15 @@ const CartPage = () => {
             <span className="custom-check"></span>
             <span className="label-text">전체선택</span>
         </label>
+<<<<<<< HEAD
         <button className="btn-delete-selected" onClick={() => handleRemoveSelected()}>선택삭제</button>
+=======
+<<<<<<< HEAD
+        <button className="btn-delete-selected" onClick={() => handleRemoveSelected()}>선택삭제</button>
+=======
+        <button className="btn-delete-selected">선택삭제</button>
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
       </div>
 
       {/* 2. 장바구니 리스트 */}
@@ -109,7 +138,15 @@ const CartPage = () => {
                   <input
                         type="checkbox"
                         checked={item.checked} 
+<<<<<<< HEAD
                         onChange={() => handleToggleItem(item.prodId, item.checked)}
+=======
+<<<<<<< HEAD
+                        onChange={() => handleToggleItem(item.prodId, item.checked)}
+=======
+                        onChange={() => handleToggleItem(item.prodId)}
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
                    />
                   <span className="custom-check"></span>
                </label>
@@ -128,7 +165,15 @@ const CartPage = () => {
                     <h4 className="item-title">{item.prodName}</h4>
                     <p className="item-option">{item.prodDesc}</p>
                  </div>
+<<<<<<< HEAD
                  <button className="btn-remove-item" onClick={() => removeFromCart(item.prodId)}>×</button>
+=======
+<<<<<<< HEAD
+                 <button className="btn-remove-item" onClick={() => removeFromCart(item.prodId)}>×</button>
+=======
+                 <button className="btn-remove-item">×</button>
+>>>>>>> 1f1c1fec3120461f2aa9d415c5d6ddc013c35785
+>>>>>>> 71a0fa734c94d735656c0df6dc47fe6b0c15eead
               </div>
 
               <div className="item-bottom">
