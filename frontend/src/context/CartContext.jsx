@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useModal } from "./ModalContext";
+import { useToast } from "./ToastContext";
 // 1. Context 생성
 const CartContext = createContext();
 
@@ -7,6 +8,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   // 초기값: 로컬 스토리지에 데이터가 있으면 가져오고, 없으면 빈 배열([])
   const { openModal } = useModal();
+  const { showToast } = useToast();
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('shopping_cart');
     return savedCart ? JSON.parse(savedCart) : [];
@@ -29,7 +31,7 @@ export const CartProvider = ({ children }) => {
       // 3. 아무것도 하지 않고 함수를 여기서 끝냅니다 (return)
       return;
     }
-
+    showToast("장바구니에 담겼습니다.");
     // 4. 존재하지 않을 때만 실행됨: 새로 추가 (초기 수량 1)
     setCartItems((prevItems) => [...prevItems, { ...product, quantity: 1 , checked : true}]);
   };

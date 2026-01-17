@@ -9,6 +9,7 @@ import 'swiper/css/pagination';
 import api from '../../api/axios'; // 설정해둔 axios 인스턴스
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
 import { useCart } from '../../context/CartContext';
+
 import { useHeader } from '../../context/HeaderContext'; // 리모컨 가져오기
 
 
@@ -23,6 +24,7 @@ const ProductDetail = () => {
     const [sliderList, setSliderList] = useState([]);
     const [activeTab, setActiveTab] = useState('tab-1');
     const {setHeader } = useHeader(); // 리모컨 기능 중 '설정하기' 가져옴
+ 
 
     useEffect(() => {
         // 화면이 열릴 때(마운트 될 때) 실행
@@ -191,7 +193,7 @@ const ProductDetail = () => {
                 
                 {/* 4. 하단 버튼 영역 (Fixed) */}
                 <div className="action-buttons">
-                    <button className="cart-btn" onClick={() => addToCart(prod)}>
+                    <button className="cart-btn" onClick={() => {addToCart(prod);}}>
                         장바구니 담기
                     </button>
                     <div className="button-divider"></div>

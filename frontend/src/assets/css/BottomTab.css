@@ -100,3 +100,33 @@
   justify-content: center;
   border: 2px solid #fff; 
 }
+
+/* 토스트 팝업 기본 스타일 */
+.toast-popup {
+  position: fixed;       /* 화면에 고정 */
+  left: 50%;             /* 가로 중앙 정렬 시작점 */
+  transform: translateX(-50%); /* 정확히 가운데로 이동 */
+  
+  /* ⭐ 위치 핵심: 바텀탭 높이만큼 띄우기 ⭐ */
+  bottom: 80px;          /* 탭바 높이가 보통 60px라면 여유 있게 80px 줌 */
+  
+  background-color: rgba(33, 33, 33, 0.9); /* 검은색 배경 (투명도 약간) */
+  color: #fff;           /* 글자색 흰색 */
+  padding: 12px 24px;    /* 안쪽 여백 */
+  border-radius: 50px;   /* 둥근 모서리 */
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 2000;         /* 탭바(보통 1000)보다 높게 설정해서 위에 뜨게 함 */
+  
+  /* 애니메이션 효과 */
+  opacity: 0;            /* 평소에는 안 보임 */
+  visibility: hidden;    /* 클릭도 안 되게 숨김 */
+  transition: all 0.3s ease-in-out; /* 부드럽게 나타나기 */
+}
+
+/* 토스트가 활성화(active) 되었을 때 */
+.toast-popup.active {
+  opacity: 1;            /* 보이게 설정 */
+  visibility: visible;
+  bottom: 90px;          /* 살짝 위로 올라오면서 나타나는 효과 */
+}

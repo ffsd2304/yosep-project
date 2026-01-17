@@ -53,6 +53,11 @@ const CartPage = () => {
       removeFromCart(selectedIds);
    };
 
+   // 상품 상세 이동 핸들러 (jQuery click 이벤트 대체)
+    const handleProductClick = (prodId) => {
+        navigate(`/store/productDetail/${prodId}`);
+    };
+
   // 이미지 에러 핸들러
   const handleImageError = (e) => {
     e.target.src = '/images/no-image.png';
@@ -117,7 +122,7 @@ const CartPage = () => {
 
             {/* 상품 정보 영역 */}
             <div className="item-content">
-              <div className="item-top">
+              <div className="item-top" onClick={() => handleProductClick(item.prodId)}>
                  <img 
                      src={`${item.imageUrl}${item.fileName}`}
                      alt={item.prodName}
@@ -128,7 +133,13 @@ const CartPage = () => {
                     <h4 className="item-title">{item.prodName}</h4>
                     <p className="item-option">{item.prodDesc}</p>
                  </div>
-                 <button className="btn-remove-item" onClick={() => removeFromCart(item.prodId)}>×</button>
+                 <button 
+                     className="btn-remove-item" 
+                     onClick={(e) => {
+                                       e.stopPropagation(); // ⭐ 중요: 부모 div로 클릭 이벤트가 퍼지는 것을 막습니다!
+                                       removeFromCart(item.prodId);
+                                    }}>×
+                  </button>
               </div>
 
               <div className="item-bottom">
