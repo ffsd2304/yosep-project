@@ -2,10 +2,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
-import { CartProvider } from './context/CartContext';
 import { HeaderProvider } from './context/HeaderContext'; // import
-import { ToastProvider } from './context/ToastContext.jsx'; // import
 import { ModalProvider } from './context/ModalContext'; // 방금 만든 파일 import
+import { ToastProvider } from './context/ToastContext.jsx'; // import
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -14,9 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ModalProvider>
     <ToastProvider>
     <HeaderProvider>
-    <CartProvider>
         <App />
-    </CartProvider>
     </HeaderProvider>
     </ToastProvider>
     </ModalProvider>

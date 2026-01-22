@@ -33,7 +33,6 @@ public class ProductRestController {
     @ResponseBody // 👈 이게 있어야 HTML이 아니라 JSON 데이터가 나갑니다.
     public List<ProductDTO> getProductList(@RequestBody Map<String,Object> map) {
         // 1. 서비스에서 데이터를 가져옵니다.
-        log.info("map : " + map);
         List<ProductDTO> list = productService.getProductList(map);
         
         // 2. 리스트(데이터) 자체를 바로 리턴합니다.
@@ -57,4 +56,5 @@ public class ProductRestController {
         
         return response; // 브라우저에 JSON 형태로 전달됨
     }
+
 }

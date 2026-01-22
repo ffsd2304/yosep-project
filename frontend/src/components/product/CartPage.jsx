@@ -16,7 +16,10 @@ const CartPage = () => {
     updateCartItem, 
     updateAllCartItems, 
     removeFromCart, 
-    removeCheckedItems 
+    removeCheckedItems,
+    totalAmount,
+    shippingFee,
+    finalAmount
   } = useCart();
 
   // 헤더 설정
@@ -35,6 +38,11 @@ const CartPage = () => {
   // 개별 아이템 토글 핸들러
   const handleToggleItem = (prodId, currentChecked) => {
     updateCartItem(prodId, { checked: !currentChecked });
+  };
+
+  // 개별 아이템 토글 핸들러
+  const handleItemCount = (prodId, itemCount) => {
+    updateCartItem(prodId, { quantity: itemCount });
   };
 
    const handleRemoveSelected = () => {
@@ -63,14 +71,6 @@ const CartPage = () => {
     e.target.src = '/images/no-image.png';
   };
 
-  // 3. 금액 계산 (Context 데이터 기준)
-  const totalAmount = cartItems.reduce((acc, item) => {
-    return item.checked ? acc + (Number(item.prodPrice || 0) * Number(item.quantity || 1)) : acc;
-  }, 0);
-
-  const shippingFee = (totalAmount === 0 || totalAmount >= 50000) ? 0 : 3000;
-  const finalAmount = totalAmount + shippingFee;
-  
   if (cartItems.length === 0) {
     return (
       <div className="cart-page-wrapper empty-view">
@@ -145,10 +145,12 @@ const CartPage = () => {
               <div className="item-bottom">
                  {/* 수량 조절기 */}
                  <div className="qty-control">
-                    <button>−</button>
-                    <input type="text" value={item.quantity} readOnly />
-                    <button>+</button>
-                 </div>
+                     {/* 1보다 작아지지 않게 Math.max 사용 */}
+                     <button onClick={() => handleItemCount(item.prodId, Math.max(0, item.quantity - 1))}>−</button>
+                     {/* item.quantity가 없으면 0을 보여주도록 안전장치(|| 0) 추가 */}
+                     <input type="text" value={item.quantity || 0} readOnly />
+                     <button onClick={() => handleItemCount(item.prodId, item.quantity + 1)}>+</button>
+                  </div>
                  {/* 가격 */}
                  <div className="item-price">
                     {(item.prodPrice * item.quantity).toLocaleString()}원

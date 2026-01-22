@@ -3,7 +3,6 @@ package com.yosep.myweb.member.web;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +12,14 @@ import com.yosep.myweb.member.service.MemberDTO;
 import com.yosep.myweb.member.service.MemberMapper;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @RestController // 이 컨트롤러는 HTML이 아닌 데이터(JSON)만 보냅니다.
 @RequestMapping("/api/member")
+@RequiredArgsConstructor
 public class MemberRestController {
 
-    @Autowired
-    private MemberMapper memberMapper;
+    private final MemberMapper memberMapper;
 
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody MemberDTO memberDTO, HttpSession session) {
@@ -40,4 +40,18 @@ public class MemberRestController {
         
         return result;
     }
+
+    @PostMapping("/info")
+    public Map<String, Object> info(HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+        MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+
+        if (loginUser != null) {
+            result.put("status", "SUCCESS");
+            result.put("userId", loginUser.getUserId());
+        } else {
+            result.put("status", "FAIL");
+        }
+        return result;
     }
+}

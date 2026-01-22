@@ -66,4 +66,47 @@
         AND IMG_TYPE = 'SLIDE'  -- 슬라이더용만 가져오기
         ORDER BY SORT_ORDER ASC
     </select>
+
+    <update id="upsertCart" parameterType="CartDTO">
+        MERGE INTO PRODUCT_CART c
+        USING DUAL
+        ON (c.USER_ID = #{userId} AND c.PROD_ID = #{prodId})
+        WHEN MATCHED THEN
+            UPDATE SET 
+                QUANTITY = c.QUANTITY + #{quantity},
+                REG_DATE = SYSDATE
+        WHEN NOT MATCHED THEN
+            INSERT (
+                CART_SEQ, USER_ID, PROD_ID, PROD_NAME, PROD_PRICE, 
+                PROD_DESC, QUANTITY, FILE_NAME, IMAGE_URL, CHECKED, REG_DATE
+            ) VALUES (
+                SEQ_CART_ID.NEXTVAL, #{userId}, #{prodId}, #{prodName}, #{prodPrice}, 
+                #{prodDesc}, #{quantity}, #{fileName}, #{imageUrl}, 'Y', SYSDATE
+            )
+    </update>
+    <select id="selectCartList" resultType="CartDTO" parameterType="String">
+        SELECT 
+            CART_SEQ   as cartSeq,
+            USER_ID    as userId,
+            PROD_ID    as prodId,
+            PROD_NAME  as prodName,
+            PROD_PRICE as prodPrice,
+            PROD_DESC  as prodDesc,
+            QUANTITY   as quantity,
+            FILE_NAME  as fileName,
+            IMAGE_URL  as imageUrl,
+            CHECKED    as checked,
+            REG_DATE   as regDate
+        FROM PRODUCT_CART
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <delete id="deleteCart" parameterType="CartDTO">
+        DELETE FROM PRODUCT_CART
+        WHERE USER_ID = #{userId}
+        --단건과 전체 삭제 구분을 위한 조건문
+        <if test="prodId != null and prodId != ''">
+            AND PROD_ID = #{prodId}
+        </if>
+    </delete>
 </mapper>

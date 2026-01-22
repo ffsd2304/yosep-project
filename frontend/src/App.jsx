@@ -6,6 +6,7 @@ import Login from './components/login/Login';
 import Main from './components/main/Main';
 import CartPage from './components/product/CartPage';
 import ProductDetail from './components/product/ProductDetail';
+import { CartProvider } from './context/CartContext'; // 가져오기
 
 /**
  * ✅ 1. 실제 UI 레이아웃과 경로 감지 로직을 담은 컴포넌트
@@ -22,22 +23,29 @@ function AppContent() {
     <div className="all-wrapper">
       <div className="mobile-container">
         
-        {/* 로그인 페이지가 아닐 때만 헤더를 보여줍니다. */}
-        {!isLoginPage && <CommonHeader />}
-
         <main className="content-area">
           <Routes>
+            {/* 1. 장바구니가 필요 없는 경로 (Provider 밖) */}
             <Route path="/" element={<Navigate to="/store/login" />} />
             <Route path="/store/login" element={<Login />} />
-            <Route path="/store/main" element={<Main />} />
-            <Route path="/store/cart" element={<CartPage />} />
-            <Route path="/store/productDetail/:prodId" element={<ProductDetail />} />
+
+            {/* 2. 장바구니가 필요한 경로들을 그룹화 (Provider 안) */}
+            <Route
+              path="/store/*"
+              element={
+                <CartProvider>
+                  <CommonHeader />
+                  <Routes>
+                    <Route path="main" element={<Main />} />
+                    <Route path="cart" element={<CartPage />} />
+                    <Route path="productDetail/:prodId" element={<ProductDetail />} />
+                  </Routes>
+                  <BottomTab />
+                </CartProvider>
+              }
+            />
           </Routes>
         </main>
-
-        {/* 탭바도 로그인 페이지에서는 숨기는 것이 일반적입니다. */}
-        {!isLoginPage && <BottomTab />}
-
       </div>
     </div>
   );
