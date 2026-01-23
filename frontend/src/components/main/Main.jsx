@@ -118,6 +118,18 @@ const Main = () => {
         };
     }, []);
 
+    // [추가] 상품 리스트 내 하트 클릭 시 로컬 상태 업데이트 함수
+    // 서버 재조회 없이 프론트엔드 데이터만 즉시 변경하여 UI 반응성을 높임
+    const handleWishToggle = (targetProdId) => {
+        setProducts(prevProducts => 
+            prevProducts.map(prod => 
+                prod.prodId === targetProdId 
+                    ? { ...prod, isWished: prod.isWished === 1 ? 0 : 1 } 
+                    : prod
+            )
+        );
+    };
+
     // 정렬 텍스트 표시용 헬퍼
     const getSortText = () => {
         if (sortType === 'PRICE_LOW') return '가격 낮은순';
@@ -210,7 +222,7 @@ const Main = () => {
 
             {/* 4. 상품 리스트 영역 */}
             <div id="product-content">
-                <ProductList products={products} />
+                <ProductList products={products} onWishToggle={handleWishToggle} />
             </div>
         </div>
     );

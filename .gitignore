@@ -5,3 +5,5 @@
 /bin/
 .DS_Store
 db_data/
+frontend/dist/
+frontend/node_modules/

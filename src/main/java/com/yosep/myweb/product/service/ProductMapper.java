@@ -19,4 +19,8 @@ public interface ProductMapper {
     List<CartDTO> selectCartList(String userId);
     // 장바구니 목록 삭제
     int deleteCart(CartDTO cartDTO);
+    // 찜하기 추가
+    int insertWishList(WishListDTO dto);
+    // 찜 해제 (삭제)
+    int deleteWishList(WishListDTO dto);
 }

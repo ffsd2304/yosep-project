@@ -19,4 +19,7 @@ public class ProductDTO {
     private double prodRating; // 별점
     private int reviewCount;   // 리뷰 수
     private String detailFileName; //상세이미지 파일 명
+    private int stockCount;    // 재고 수량
+    private int wishCount; // 상품의 총 찜 갯수
+    private int isWished;  // 현재 유저의 찜 여부 (1:함, 0:안함)
 }

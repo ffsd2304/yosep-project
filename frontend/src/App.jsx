@@ -1,11 +1,10 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import './assets/css/style.css';
-import BottomTab from './components/common/BottomTab';
 import CommonHeader from './components/common/CommonHeader';
+import StoreContainer from './components/common/StoreContainer';
 import Login from './components/login/Login';
-import Main from './components/main/Main';
-import CartPage from './components/product/CartPage';
 import ProductDetail from './components/product/ProductDetail';
+import PurchasePage from './components/product/PurchasePage';
 import { CartProvider } from './context/CartContext'; // 가져오기
 
 /**
@@ -36,11 +35,12 @@ function AppContent() {
                 <CartProvider>
                   <CommonHeader />
                   <Routes>
-                    <Route path="main" element={<Main />} />
-                    <Route path="cart" element={<CartPage />} />
+                    {/* 상세, 구매 페이지는 별도 라우트로 관리 (탭 바 위로 덮어씌워짐) */}
                     <Route path="productDetail/:prodId" element={<ProductDetail />} />
+                    <Route path="purchase" element={<PurchasePage />} />
+                    {/* 나머지 모든 경로는 StoreContainer가 탭(Main, Cart, MyPage)으로 처리 */}
+                    <Route path="*" element={<StoreContainer />} />
                   </Routes>
-                  <BottomTab />
                 </CartProvider>
               }
             />

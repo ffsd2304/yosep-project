@@ -1,0 +1,8 @@
+# Spring Boot Build Output
+target/
+
+# React Build Output
+frontend/dist/
+
+# React Dependencies (AI 성능 향상을 위해 필수 제외)
+frontend/node_modules/

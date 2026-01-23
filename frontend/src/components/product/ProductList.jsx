@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 1. 상단에 import
+import api from '../../api/axios'; // 설정해둔 axios 인스턴스
 // 부모 컴포넌트(Main.jsx)로부터 상품 리스트(products)를 props로 받아옵니다.
-const ProductList = ({ products }) => {
+const ProductList = ({ products, onWishToggle }) => {
     const navigate = useNavigate(); // 2. navigate 함수 생성
+    // 중복 클릭 방지를 위해 처리 중인 상품 ID들을 저장하는 Set
+    const [processingIds, setProcessingIds] = useState(new Set());
+
     // 1. 숫자 포맷팅 함수 (JSTL fmt:formatNumber 대체)
     const formatPrice = (price) => {
         return price ? price.toLocaleString() : '0';
@@ -15,6 +20,36 @@ const ProductList = ({ products }) => {
     // 3. 이미지 에러 핸들러 (onerror 대체)
     const handleImageError = (e) => {
         e.target.src = '/images/no-image.png';
+    };
+
+    // 찜하기 버튼 클릭 핸들러
+    const handleWishClick = (e, prodId, isWished) => {
+        e.stopPropagation(); // ⭐ 중요: 부모의 카드 클릭 이벤트(상세이동)가 발생하지 않도록 막음
+
+        // 이미 처리 중인 상품이라면 클릭 무시 (Lock)
+        if (processingIds.has(prodId)) return;
+        setProcessingIds(prev => new Set(prev).add(prodId));
+
+        const wishApiStr = isWished === 1 ? '/api/wish/delete' : '/api/wish/insert';
+        api.post(wishApiStr, {
+            prodId,
+            isWished: isWished === 1 ? 0 : 1 // 현재 상태의 반대로 전송
+        })
+        .then(() => {
+            // 서버 DB 업데이트 성공 시, 부모 컴포넌트의 로컬 상태도 변경해줍니다.
+            if (onWishToggle) {
+                onWishToggle(prodId);
+            }
+        })
+        .catch(err => console.error("찜 상태 변경 실패:", err))
+        .finally(() => {
+            // 성공하든 실패하든 요청이 끝나면 목록에서 제거 (Unlock)
+            setProcessingIds(prev => {
+                const next = new Set(prev);
+                next.delete(prodId);
+                return next;
+            });
+        });
     };
 
     return (
@@ -36,6 +71,13 @@ const ProductList = ({ products }) => {
                                 alt={prod.prodName} 
                                 onError={handleImageError} 
                             />
+                            {/* ⭐ 하트 버튼 추가 */}
+                            <div 
+                                className={`wish-icon-btn ${prod.isWished === 1 ? 'active' : ''}`}
+                                onClick={(e) => handleWishClick(e, prod.prodId, prod.isWished)}
+                            >
+                                {prod.isWished === 1 ? '❤️' : '🤍'}
+                            </div>
                         </div>
                         <div className="product-detail">
                             <div className="product-title">{prod.prodName}</div>

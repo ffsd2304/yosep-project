@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 // 1. 방송국 채널 개설
 const HeaderContext = createContext();
@@ -12,9 +12,9 @@ export const HeaderProvider = ({ children }) => {
     });
 
     // 헤더 정보를 바꾸는 함수 (편리하게 쓰기 위해 함수 하나로 묶음)
-    const setHeader = (title, showBack = true) => {
+    const setHeader = useCallback((title, showBack = true) => {
         setHeaderConfig({ title, showBack });
-    };
+    }, []);
 
     return (
         <HeaderContext.Provider value={{ headerConfig, setHeader }}>

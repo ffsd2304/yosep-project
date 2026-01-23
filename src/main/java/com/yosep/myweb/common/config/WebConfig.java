@@ -5,19 +5,21 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry; // [필�
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.yosep.myweb.common.interceptor.LoginCheckInterceptor;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     // [기존] 인터셉터 설정 (로그인 체크 등)
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        /*registry.addInterceptor(new LoginCheckInterceptor())
+        registry.addInterceptor(new LoginCheckInterceptor())
                 .order(1)
                 .addPathPatterns("/api/**") // 모든 API 요청을 감시하되
                 .excludePathPatterns(
                     "/api/member/login",   // 로그인
                     "/api/terms/terms"                 // 약관조회
-                );*/
+                );
     }
 
         // ▼▼▼ [추가] CORS 설정 (리액트 접속 허용) ▼▼▼

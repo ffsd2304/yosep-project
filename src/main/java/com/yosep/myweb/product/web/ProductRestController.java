@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yosep.myweb.member.service.MemberDTO;
 import com.yosep.myweb.product.service.ProductDTO;
 import com.yosep.myweb.product.service.ProductImgDTO;
 import com.yosep.myweb.product.service.ProductService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,10 +33,13 @@ public class ProductRestController {
      */
     @PostMapping("/list") // API 경로 구분 권장
     @ResponseBody // 👈 이게 있어야 HTML이 아니라 JSON 데이터가 나갑니다.
-    public List<ProductDTO> getProductList(@RequestBody Map<String,Object> map) {
+    public List<ProductDTO> getProductList(@RequestBody Map<String,Object> map, HttpSession session) {
+
+        MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+        String userId = (loginUser != null) ? loginUser.getUserId() : null;
+        map.put("userId", userId);
         // 1. 서비스에서 데이터를 가져옵니다.
         List<ProductDTO> list = productService.getProductList(map);
-        
         // 2. 리스트(데이터) 자체를 바로 리턴합니다.
         return list; 
     }

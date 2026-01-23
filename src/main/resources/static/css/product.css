@@ -241,6 +241,16 @@
     background-color: #f0c000;
 }
 
+/* 품절 상태 버튼 (비활성화) */
+.buy-btn.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.buy-btn.disabled:hover {
+    background-color: #cccccc;
+}
+
 /* 2. 점(Pagination) 컨테이너 중앙 정렬 */
 .swiper-pagination {
     width: 100% !important; /* 전체 너비를 차지하게 함 */
@@ -331,4 +341,10 @@
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+/* 품절 텍스트 */
+.sold-out-text {
+    color: red;
+    font-weight: bold;
 }

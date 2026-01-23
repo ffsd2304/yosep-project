@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import api from '../../api/axios'; // 설정해둔 axios 인스턴스
+import { useOrder } from '../../api/useOrder'; // 공통 구매 훅 import
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
 import { useCart } from '../../context/CartContext';
 
@@ -19,9 +20,11 @@ const ProductDetail = () => {
     // sliderList: 슬라이더 이미지 배열
     const { prodId } = useParams();
     const { addToCart } = useCart(); // 아까 만든 훅 호출
+    const { orderItems } = useOrder(); // 공통 구매 훅 호출
 
     const [prod, setProd] = useState(null);
     const [sliderList, setSliderList] = useState([]);
+    const [quantity, setQuantity] = useState(1); // 수량 상태 추가
     const [activeTab, setActiveTab] = useState('tab-1');
     const {setHeader } = useHeader(); // 리모컨 기능 중 '설정하기' 가져옴
  
@@ -47,6 +50,11 @@ const ProductDetail = () => {
         fetchInitProdData();
     }, [prodId]);
 
+    // 수량 변경 핸들러
+    const handleQuantityChange = (val) => {
+        setQuantity(Math.max(1, quantity + val));
+    };
+
     // 별점 계산을 위한 헬퍼 (JSTL forEach 대체)
     const renderStars = (rating) => {
         const roundedRating = Math.round(rating);
@@ -60,6 +68,25 @@ const ProductDetail = () => {
     const handlerTabChange = (tabId) => {
         setActiveTab(tabId);
     };
+
+    // 바로구매 핸들러
+    const handleBuyNow = () => {
+        if (!prod) return;
+        
+        // 단일 상품을 배열 형태로 만들어서 전달
+        const itemToBuy = [{
+            prodId: prod.prodId,
+            prodName: prod.prodName,
+            prodPrice: prod.prodPrice,
+            prodDesc: prod.prodDesc, // 데이터 일관성을 위해 추가
+            quantity: quantity, // 선택한 수량 반영
+            imageUrl: prod.imageUrl,
+            fileName: prod.fileName
+        }];
+        
+        orderItems(itemToBuy);
+    };
+
     if (!prod) {
         return <div className="loading-container" style={{textAlign:'center', padding:'50px'}}>로딩 중...</div>;
     }
@@ -115,11 +142,31 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="price-container">
-                    <span className="discount-price">
-                        {/* fmt:formatNumber price 대체 (toLocaleString) */}
-                        {prod.prodPrice ? prod.prodPrice.toLocaleString() : 0}원
-                    </span>
+                    {prod.stockCount > 0 ? (
+                        <span className="discount-price">
+                            {prod.prodPrice ? prod.prodPrice.toLocaleString() : 0}원
+                        </span>
+                    ) : (
+                        <span className="discount-price sold-out-text">
+                            품절
+                        </span>
+                    )}
                 </div>
+
+                {/* 수량 선택 영역 추가 */}
+                {prod.stockCount > 0 && (
+                    <div className="quantity-selector-detail">
+                        <span className="qty-label">수량</span>
+                        <div className="qty-control">
+                            <button onClick={() => handleQuantityChange(-1)}>−</button>
+                            <input type="text" value={quantity} readOnly />
+                            <button onClick={() => handleQuantityChange(1)}>+</button>
+                        </div>
+                        <span className="total-price-preview">
+                            {(prod.prodPrice * quantity).toLocaleString()}원
+                        </span>
+                    </div>
+                )}
 
                 {/* 3. 탭 컨테이너 (Hook 없이 정적으로 Tab-1만 활성화 처리) */}
                 <div className="tab-container">
@@ -193,11 +240,17 @@ const ProductDetail = () => {
                 
                 {/* 4. 하단 버튼 영역 (Fixed) */}
                 <div className="action-buttons">
-                    <button className="cart-btn" onClick={() => {addToCart(prod);}}>
+                    <button className="cart-btn" onClick={() => {addToCart({ ...prod, quantity });}}>
                         장바구니 담기
                     </button>
                     <div className="button-divider"></div>
-                    <button className="buy-btn">바로구매</button>
+                    <button 
+                        className={`buy-btn ${prod.stockCount <= 0 ? 'disabled' : ''}`}
+                        disabled={prod.stockCount <= 0}
+                        onClick={handleBuyNow}
+                    >
+                        바로구매
+                    </button>
                 </div>
             </div>
         </div>

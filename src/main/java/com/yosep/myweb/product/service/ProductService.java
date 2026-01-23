@@ -39,4 +39,12 @@ public class ProductService {
     public int deleteCart(CartDTO cartDTO) {
         return productMapper.deleteCart(cartDTO);
     }
+    // 찜하기 추가
+    public int insertWishList(WishListDTO dto) {
+        return productMapper.insertWishList(dto);
+    }
+    // 찜하기 삭제
+    public int deleteWishList(WishListDTO dto) {
+        return productMapper.deleteWishList(dto);
+    }
 }

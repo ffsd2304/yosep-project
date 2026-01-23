@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 페이지 이동 훅 추가
+import { useOrder } from '../../api/useOrder'; // 공통 구매 훅 import
 import '../../assets/css/cart.css'; // 아래 CSS 파일 생성 필요
 import { useCart } from '../../context/CartContext';
 import { useHeader } from '../../context/HeaderContext';
 import { useModal } from "../../context/ModalContext";
 
-const CartPage = () => {
+const CartPage = ({ onTabChange }) => {
   const { setHeader } = useHeader();
   const { openModal } = useModal();
   const navigate = useNavigate();
@@ -21,6 +22,9 @@ const CartPage = () => {
     shippingFee,
     finalAmount
   } = useCart();
+  
+  // 공통 구매 로직 사용
+  const { orderItems } = useOrder();
 
   // 헤더 설정
   useEffect(() => {
@@ -71,6 +75,18 @@ const CartPage = () => {
     e.target.src = '/images/no-image.png';
   };
 
+  // 구매하기 버튼 핸들러
+  const handleOrder = () => {
+    const checkedItems = cartItems.filter(item => item.checked);
+    
+    if (checkedItems.length === 0) {
+        openModal("알림", "구매할 상품을 선택해주세요.");
+        return;
+    }
+    // 훅을 통해 구매 진행 (재고 체크 -> 이동)
+    orderItems(checkedItems);
+  };
+
   if (cartItems.length === 0) {
     return (
       <div className="cart-page-wrapper empty-view">
@@ -81,7 +97,7 @@ const CartPage = () => {
          <h2 className="empty-title">장바구니에 담은 상품이 없어요</h2>
          <p className="empty-desc">원하는 상품을 담아보세요</p>
          
-         <button className="btn-go-shopping" onClick={() => navigate('/store/main')}>
+         <button className="btn-go-shopping" onClick={() => onTabChange ? onTabChange('home') : navigate('/store/main')}>
             쇼핑하러 가기
          </button>
       </div>
@@ -192,7 +208,7 @@ const CartPage = () => {
             <span className="count">총 {cartItems.filter(i=>i.checked).length}개</span>
             <span className="price">{finalAmount.toLocaleString()}원</span>
          </div>
-         <button className="btn-order">구매하기</button>
+         <button className="btn-order" onClick={handleOrder}>구매하기</button>
       </div>
 
     </div>

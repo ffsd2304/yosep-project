@@ -11,33 +11,16 @@ export const CartProvider = ({ children }) => {
   const { showToast } = useToast();
   const [cartItems, setCartItems] = useState([]);
   
-  const [userId, setUserId] = useState(null);
-
-  // 0. 사용자 정보 가져오기 (세션 체크)
-  useEffect(() => {
-    api.post('/api/member/info')
-      .then(response => {
-        if (response.data && response.data.status === 'SUCCESS') {
-          setUserId(response.data.userId);
-        }
-      })
-      .catch(() => {
-        // 로그인되지 않은 상태이거나 에러 발생 시 무시 (userId는 null 유지)
-      });
-  }, []);
-
   // 1. 장바구니 목록 API 호출 (Mount 시)
   useEffect(() => {
-    if (!userId) return;
-
-    api.post('/api/cart/list', { userId })
+    api.post('/api/cart/list')
     .then(response => {
       // DB 데이터에 UI 제어용 checked 속성 추가 (기본값 true)
       const data = response.data;
       setCartItems(data.map(item => ({ ...item, checked: true })));
     })
-    .catch(err => console.error("장바구니 목록 로드 실패:", err));
-  }, [userId]);
+    .catch(err => console.error("장바구니 목록 로드 실패:", err)); // 비로그인 시 빈 배열 반환 가정
+  }, []);
 
   // 장바구니 추가 함수
   const addToCart = async (product) => {
@@ -54,7 +37,6 @@ export const CartProvider = ({ children }) => {
 
     try {
       const res = await api.post('/api/cart/update', {
-        userId,
         prodId: product.prodId,
         prodName: product.prodName,
         prodPrice: product.prodPrice,
@@ -80,7 +62,7 @@ export const CartProvider = ({ children }) => {
     try {
       // 여러 개 삭제 처리를 위해 Promise.all 사용
       await Promise.all(idsToRemove.map(prodId => 
-        api.post('/api/cart/delete', { userId, prodId })
+        api.post('/api/cart/delete', { prodId })
       ));
 
       setCartItems((prevItems) => {
@@ -106,7 +88,6 @@ export const CartProvider = ({ children }) => {
     // 수량이 변경된 경우 서버에 업데이트 요청
     if (newAttributes.quantity !== undefined) {
       api.post('/api/cart/update', {
-        userId,
         prodId,
         quantity: newAttributes.quantity
       }).catch(err => console.error("수량 업데이트 실패:", err));
@@ -114,7 +95,6 @@ export const CartProvider = ({ children }) => {
 
     if (newAttributes.checked !== undefined) {
       api.post('/api/cart/update', {
-        userId,
         prodId,
         checked: newAttributes.checked?'Y':'N'
       }).catch(err => console.error("체크 상태 업데이트 실패:", err));
