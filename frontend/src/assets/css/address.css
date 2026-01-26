@@ -1,0 +1,232 @@
+/* =========================================
+   [추가] 배송지 관리 (Shipping Address)
+   ========================================= */
+
+/* 배송지 변경 화면 전체 덮기 (Overlay) */
+.shipping-address-overlay {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%); /* 모바일 중앙 정렬 */
+    width: 100%;
+    max-width: 450px;
+    height: 100%;
+    background-color: #ffffff;
+    z-index: 20000; /* 헤더, 탭보다 높게 설정 */
+    overflow-y: auto; /* 배송지 목록이 길어질 경우 내부 스크롤 허용 */
+}
+
+/* 배송지 목록 전체 컨테이너 */
+.address-page-wrapper {
+    background-color: #ffffff;
+    min-height: calc(100vh - 56px); /* 헤더 높이 제외하고 꽉 채움 */
+    padding: 20px;
+}
+
+/* 1. 새로운 배송지 추가 버튼 */
+.btn-add-address {
+    width: 100%;
+    height: 50px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px; /* 살짝 둥근 모서리 */
+    font-size: 15px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 25px; /* 리스트와 간격 */
+    transition: background 0.2s;
+}
+
+.btn-add-address:hover {
+    background-color: #f9f9f9;
+}
+
+/* 2. 배송지 리스트 아이템 */
+.address-item {
+    display: flex;
+    align-items: flex-start; /* 위쪽 정렬 */
+    gap: 12px;
+    margin-bottom: 25px; /* 아이템 간 간격 */
+}
+
+/* 체크 아이콘 (왼쪽) */
+.addr-check-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #e0e0e0; /* 기본 회색 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* 크기 줄어들지 않음 */
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* 선택되었을 때 (노란색) */
+.addr-check-btn.selected {
+    background-color: var(--color-primary); /* #FFCC00 */
+}
+
+/* 주소 정보 영역 (오른쪽) */
+.addr-info-box {
+    flex: 1;
+}
+
+/* 이름/전화번호 줄 */
+.addr-header-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+.addr-name {
+    font-weight: bold;
+    color: #111;
+}
+
+/* '기본' 뱃지 */
+.badge-default {
+    background-color: #FFD400; /* 조금 더 진한 노랑 or var(--color-primary) */
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #333;
+    font-weight: normal;
+}
+
+.addr-phone {
+    color: #666;
+    margin-left: 2px;
+}
+
+/* 구분선 (|) */
+.addr-divider-ver {
+    color: #ddd;
+    font-size: 12px;
+    margin: 0 2px;
+}
+
+/* 실제 주소 텍스트 */
+.addr-detail-text {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+/* 상세 주소 줄바꿈 스타일 추가 */
+.addr-detail-text .addr-zip-road {
+    display: block;
+    margin-bottom: 4px;
+}
+.addr-detail-text .addr-spec {
+    display: block;
+    color: #666; /* 상세 주소는 약간 연하게 */
+}
+
+/* 배송 요청사항 */
+.addr-req-text {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+/* 수정/삭제 버튼 영역 */
+.addr-action-row {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-addr-action {
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.action-divider {
+    width: 1px;
+    height: 10px;
+    background-color: #ddd;
+}
+
+/* 3. 배송지 추가 폼 스타일 */
+.form-container {
+    padding: 10px 0 100px 0; /* 하단 버튼 공간 확보 */
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 8px;
+}
+
+.input-underline, .select-underline {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    background: transparent;
+    border-radius: 0;
+}
+
+.input-underline:focus, .select-underline:focus {
+    border-bottom-color: var(--color-primary);
+}
+
+/* 우편번호 찾기 버튼 */
+.btn-zipcode-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+/* 하단 저장 버튼 영역 */
+.bottom-btn-area {
+    position: absolute; /* overlay가 fixed이므로 absolute로 하단 고정 */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 20px;
+    background-color: #fff;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+}
+
+.btn-save {
+    width: 100%;
+    height: 52px;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #111;
+    cursor: pointer;
+}

@@ -10,7 +10,6 @@ import api from '../../api/axios'; // 설정해둔 axios 인스턴스
 import { useOrder } from '../../api/useOrder'; // 공통 구매 훅 import
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
 import { useCart } from '../../context/CartContext';
-
 import { useHeader } from '../../context/HeaderContext'; // 리모컨 가져오기
 
 
@@ -239,7 +238,7 @@ const ProductDetail = () => {
                 <div className="bottom-spacer" style={{ height: '80px' }}></div>
                 
                 {/* 4. 하단 버튼 영역 (Fixed) */}
-                <div className="action-buttons">
+                <div className="action-buttons"> {/* 탭 높이만큼 띄움 */}
                     <button className="cart-btn" onClick={() => {addToCart({ ...prod, quantity });}}>
                         장바구니 담기
                     </button>

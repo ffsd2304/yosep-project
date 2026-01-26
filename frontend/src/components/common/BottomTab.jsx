@@ -8,6 +8,7 @@ const BottomTab = ({ activeTab, onTabChange }) => {
   const { toast } = useToast();
   
   const totalCount = cartItems.reduce((acc, cur) => acc + cur.quantity, 0);
+  const itemCount = cartItems.length; // 상품 종류의 갯수 (Unique Product Count)
 
   return (
     <>
@@ -27,7 +28,7 @@ const BottomTab = ({ activeTab, onTabChange }) => {
         <div className={`tab-item ${activeTab === 'cart' ? 'active' : ''}`} onClick={() => onTabChange('cart')}>
           <div className="icon-wrapper">
             <div className="icon cart"></div> {/* 클래스명 cart 추가 */}
-            {totalCount > 0 && <span className="badge">{totalCount}</span>}
+            {itemCount > 0 && <span className="badge">{itemCount}</span>}
           </div>
           <span className="label">장바구니</span>
         </div>

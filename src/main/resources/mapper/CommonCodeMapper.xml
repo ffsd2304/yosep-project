@@ -18,4 +18,16 @@
         ORDER BY D.SORT_ORDER ASC           -- 지정된 순서대로 정렬
     </select>
 
+    <select id="getAllCodeList" resultType="CommonCodeDTO">
+        SELECT 
+            D.MASTER_CODE AS masterCode,
+            D.DETAIL_CODE AS detailCode,
+            D.DETAIL_NAME AS detailName,
+            D.SORT_ORDER  AS sortOrder,
+            D.USE_YN      AS useYn
+        FROM CODE_DETAIL D
+        WHERE D.USE_YN = 'Y'
+        ORDER BY D.MASTER_CODE, D.SORT_ORDER ASC
+    </select>
+
 </mapper>

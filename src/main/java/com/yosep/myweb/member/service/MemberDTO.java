@@ -1,6 +1,7 @@
 package com.yosep.myweb.member.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Data;
 
@@ -18,4 +19,7 @@ public class MemberDTO implements Serializable{
     private String genderCode;
     private String phoneNum;
     private String regDate; // 가입일
+
+    // 1:N 구조를 위한 배송지 목록 추가
+    private List<MemberAddrDTO> addrList;
 }

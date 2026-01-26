@@ -1,11 +1,12 @@
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './assets/css/style.css';
+import BottomTab from './components/common/BottomTab';
 import CommonHeader from './components/common/CommonHeader';
 import StoreContainer from './components/common/StoreContainer';
 import Login from './components/login/Login';
 import ProductDetail from './components/product/ProductDetail';
 import PurchasePage from './components/product/PurchasePage';
-import { CartProvider } from './context/CartContext'; // 가져오기
 
 /**
  * ✅ 1. 실제 UI 레이아웃과 경로 감지 로직을 담은 컴포넌트
@@ -13,10 +14,20 @@ import { CartProvider } from './context/CartContext'; // 가져오기
  */
 function AppContent() {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // 헤더를 숨길 경로를 정의합니다.
-  const hideHeaderPaths = ['/store/login', '/'];
-  const isLoginPage = hideHeaderPaths.includes(location.pathname);
+  // 탭 상태를 App 레벨로 끌어올림
+  const [activeTab, setActiveTab] = useState(sessionStorage.getItem('storeActiveTab') || 'home');
+
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+    sessionStorage.setItem('storeActiveTab', tabName);
+    
+    // 상세페이지나 구매페이지에서 탭을 누르면 메인 컨테이너로 이동
+    if (location.pathname.includes('productDetail') || location.pathname.includes('purchase')) {
+      navigate('/store/main');
+    }
+  };
 
   return (
     <div className="all-wrapper">
@@ -32,16 +43,17 @@ function AppContent() {
             <Route
               path="/store/*"
               element={
-                <CartProvider>
+                <>
                   <CommonHeader />
                   <Routes>
                     {/* 상세, 구매 페이지는 별도 라우트로 관리 (탭 바 위로 덮어씌워짐) */}
                     <Route path="productDetail/:prodId" element={<ProductDetail />} />
                     <Route path="purchase" element={<PurchasePage />} />
                     {/* 나머지 모든 경로는 StoreContainer가 탭(Main, Cart, MyPage)으로 처리 */}
-                    <Route path="*" element={<StoreContainer />} />
+                    <Route path="*" element={<StoreContainer activeTab={activeTab} onTabChange={handleTabChange} />} />
                   </Routes>
-                </CartProvider>
+                  <BottomTab activeTab={activeTab} onTabChange={handleTabChange} />
+                </>
               }
             />
           </Routes>

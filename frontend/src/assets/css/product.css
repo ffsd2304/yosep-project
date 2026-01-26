@@ -208,9 +208,6 @@
 /* --- [수정] 하단 구매 버튼 영역: 모바일 틀 안에 가두기 --- */
 .action-buttons {
     position: fixed;
-    /* 바텀 탭 높이(65px) 만큼 위로 올려야 가려지지 않음 */
-    bottom: 0; 
-    
     /* 화면 중앙 정렬 마법 (BottomTab과 동일한 원리) */
     width: 100%;
     max-width: 450px;       /* style.css의 mobile-container와 동일하게! */
@@ -224,6 +221,7 @@
     /* 상단 그림자 */
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); 
     z-index: 2000 !important;
+    bottom: 60px;
 }
 
 /* 🔥 [추가] 버튼 윗부분을 자연스럽게 흐리게 만드는 그라데이션 효과 🔥 */
@@ -517,6 +515,21 @@
     line-height: 1.4;
     margin-bottom: 15px;
 }
+/* 상세 주소 줄바꿈 스타일 추가 */
+.addr-detail .addr-zip-road {
+    display: block;
+    margin-bottom: 4px; /* 위아래 간격 */
+}
+.addr-detail .addr-spec {
+    display: block;
+    color: #555; /* 상세 주소는 살짝 연하게 */
+}
+
+/* 등록된 배송지가 없을 때 메시지 */
+.addr-empty-text {
+    color: #999;
+    padding: 10px 0;
+}
 
 /* 배송 요청사항 Select Box */
 .delivery-select {
@@ -533,6 +546,41 @@
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 16px;
+    -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 깜빡임(하이라이트) 제거 */
+}
+
+.delivery-select:focus {
+    outline: none; /* 클릭 시 생기는 파란/검정 테두리 제거 */
+    border-color: #333; /* 선택 중일 때 테두리를 약간 진하게 변경 */
+}
+
+/* 셀렉트 박스 플레이스홀더 효과 (선택 전 흐리게) */
+.delivery-select.placeholder {
+    color: #999;
+}
+
+.delivery-select option {
+    color: #333;
+}
+
+.delivery-select option[value=""] {
+    color: #999;
+}
+
+/* 직접 입력 input 스타일 */
+.delivery-direct-input {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.delivery-direct-input:focus {
+    border-color: #333;
 }
 
 /* --- 주문 상품 리스트 --- */

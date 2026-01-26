@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import api from '../../api/axios';
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
 import '../../assets/css/style.css'; // 기존 style.css import
 import { useHeader } from '../../context/HeaderContext';
+import ShippingAddress from '../common/ShippingAddress'; // 컴포넌트 임포트
 
 const PurchasePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { setHeader } = useHeader();
 
+  const [isAddressMode, setIsAddressMode] = useState(false); // 배송지 선택 모드 상태
   // 1. useOrder에서 넘겨준 주문 상품 목록 받기
   // state가 없거나 orderItems가 없으면 빈 배열 처리
   const { orderItems } = location.state || { orderItems: [] };
@@ -16,6 +19,36 @@ const PurchasePage = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
+  
+  const [deliveryRequest, setDeliveryRequest] = useState(''); // 배송 요청사항 선택값
+  const [customRequest, setCustomRequest] = useState('');         // 직접 입력 내용
+
+  // 초기값을 null로 설정하고 API를 통해 가져옵니다.
+  const [selectedAddr, setSelectedAddr] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState([]);
+
+  // 1. 초기 배송지 정보 로드
+  useEffect(() => {
+    // Mapper의 동적 쿼리를 활용하기 위해 defaultYn: 'Y' 파라미터 전달
+    api.post('/api/member/addresses', { defaultYn: 'Y' })
+      .then(response => {
+        if (response.data.status === 'SUCCESS' && response.data.addresses.length > 0) {
+          // 서버에서 이미 기본 배송지만 필터링해서 가져왔으므로 첫 번째 요소를 바로 사용
+          setSelectedAddr(response.data.addresses[0]);
+          setDeliveryRequest(response.data.addresses[0].dlvrReqCode || '');
+        }
+      })
+      .catch(error => {
+        console.error('기본 배송지 로드 실패:', error);
+      });
+      api.get('/api/common/codes/DLVR_REQ_TYPE')
+      .then(res => {
+        if(res.data.status === 'SUCCESS') {
+          setSelectedCategory(res.data.codes);
+        }
+      });
+
+  }, []);
 
   useEffect(() => {
     setHeader('주문/결제', true);
@@ -44,10 +77,13 @@ const PurchasePage = () => {
 
   return (
     <div className="mobile-container">
-      {/* [헤더 영역] 
-        사용자 요청: 공통 헤더 사용 예정이므로 공간만 확보하거나 제외 
-        content-area 클래스가 padding-top 등을 제어한다고 가정
-        */}
+      {/* 배송지 선택 모드일 때 ShippingAddress 컴포넌트를 화면 전체에 띄움 */}
+      {isAddressMode && (
+        <ShippingAddress 
+          onSelect={(addr) => setSelectedAddr(addr)} 
+          onBack={() => setIsAddressMode(false)} 
+        />
+      )}
         
       <div className="content-area checkout-bg">
         
@@ -55,27 +91,52 @@ const PurchasePage = () => {
         <div className="checkout-section">
           <div className="section-header">
             <h2 className="section-title">배송지</h2>
-            <button className="btn-change-addr">변경</button>
+            <button className="btn-change-addr" onClick={() => setIsAddressMode(true)}>변경</button>
           </div>
 
-          <div className="address-info-box">
-            <div className="addr-tags">
-              <span className="addr-badge">집</span>
-              <span className="addr-default-mark">기본</span>
+          {selectedAddr ? (
+            <div className="address-info-box">
+              <div className="addr-tags">
+                <span className="addr-badge">{selectedAddr.addrName}</span>
+                {selectedAddr.defaultYn === 'Y' && <span className="addr-default-mark">기본</span>}
+              </div>
+              <p className="addr-user">{selectedAddr.recipientName} <span className="addr-phone">{selectedAddr.recipientPhone}</span></p>
+              <p className="addr-detail">
+                <span className="addr-zip-road">({selectedAddr.zipCode}) {selectedAddr.addrRoad}</span>
+                <span className="addr-spec">{selectedAddr.addrDetail}</span>
+              </p>
             </div>
-            <p className="addr-user">백요셉 <span className="addr-phone">010-1234-5678</span></p>
-            <p className="addr-detail">
-              (02637) 서울특별시 동대문구 장안로 26다길 7 (장안동, 월드파크뷰 2차) 502호
-            </p>
-          </div>
+          ) : (
+            <div className="address-info-box addr-empty-text">
+              등록된 배송지가 없습니다. 배송지를 추가해주세요.
+            </div>
+          )}
 
           <div className="delivery-request">
-            <select className="delivery-select" defaultValue="door">
-              <option value="door">문 앞에 놓아주세요.</option>
-              <option value="guard">경비실에 맡겨주세요.</option>
-              <option value="call">배송 전 연락바랍니다.</option>
-              <option value="direct">직접 입력</option>
+            <select 
+              className={`delivery-select ${deliveryRequest === '' ? 'placeholder' : ''}`}
+              value={deliveryRequest}
+              onChange={(e) => setDeliveryRequest(e.target.value)}
+            >
+              <option value="">배송 요청사항을 선택해주세요.</option>
+              {selectedCategory.map((item) => (
+                <option key={item.detailCode} value={item.detailCode}>
+                  {item.detailName}
+                </option>
+              ))}
             </select>
+
+            {/* '직접 입력' 선택 시에만 input 필드 노출 */}
+            {deliveryRequest === 'R004' && (
+              <input
+                type="text"
+                className="delivery-direct-input"
+                placeholder="배송 요청사항을 입력해주세요. (최대 50자)"
+                value={customRequest}
+                onChange={(e) => setCustomRequest(e.target.value)}
+                maxLength={50}
+              />
+            )}
           </div>
         </div>
 
@@ -98,7 +159,7 @@ const PurchasePage = () => {
                   {item.prodName}
                 </div>
                 <div className="cp-meta">
-                  수량 {item.quantity}개 <span className="cp-divider">|</span> 무료배송
+                  수량 {item.quantity}개 <span className="cp-divider">|</span> {shippingFee > 0 ? `배송비 ${shippingFee.toLocaleString()}원` : '무료배송'}
                 </div>
                 <div className="cp-price">{(item.prodPrice * item.quantity).toLocaleString()}원</div>
               </div>

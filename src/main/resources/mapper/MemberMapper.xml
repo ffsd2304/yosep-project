@@ -42,4 +42,28 @@
             TO_CHAR(REG_DATE, 'YYYY-MM-DD') as regDate 
         FROM MEMBER
     </select>
+
+    <select id="selectMemberAddressList" resultType="MemberAddrDTO" parameterType="MemberAddrDTO">
+        SELECT 
+            m.USER_ID          as userId,
+            m.USER_NAME        as userName,
+            ma.ADDR_SEQ        as addrSeq,
+            ma.ADDR_NAME       as addrName,
+            ma.RECIPIENT_NAME  as recipientName,
+            ma.RECIPIENT_PHONE as recipientPhone,
+            ma.ZIP_CODE        as zipCode,
+            ma.ADDR_ROAD       as addrRoad,
+            ma.ADDR_JIBUN      as addrJibun,
+            ma.ADDR_DETAIL     as addrDetail,
+            ma.DEFAULT_YN      as defaultYn,
+            ma.DLVR_REQ_CODE    AS dlvrReqCode,
+            ma.DLVR_REQ_MESSAGE AS dlvrReqMessage
+        FROM MEMBER m
+        JOIN MEMBER_ADDR ma ON m.USER_ID = ma.USER_ID
+        WHERE m.USER_ID = #{userId}
+        <if test="defaultYn != null and defaultYn != ''">
+            AND ma.DEFAULT_YN = #{defaultYn}
+        </if>
+        ORDER BY ma.DEFAULT_YN DESC, ma.ADDR_SEQ ASC
+    </select>
 </mapper>

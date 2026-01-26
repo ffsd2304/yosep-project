@@ -1,4 +1,12 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "liveServer.settings.port": 5501,
+    "java.debug.settings.vmArgs": "-Dfile.encoding=UTF-8",
+    "files.encoding": "utf8",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "args": ["-NoExit", "/c", "chcp 65001"]
+        }
+    }
 }

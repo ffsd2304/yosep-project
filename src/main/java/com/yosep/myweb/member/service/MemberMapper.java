@@ -29,4 +29,11 @@ public interface MemberMapper {
      */
     MemberDTO loginCheck(MemberDTO memberDTO);
 
+    /**
+     * 회원의 배송지 목록 조회
+     * @param userId 사용자 ID
+     * @return List<MemberAddrDTO> 배송지 정보 리스트
+     */
+    List<MemberAddrDTO> selectMemberAddressList(MemberAddrDTO memberAddrDTO);
+
 }

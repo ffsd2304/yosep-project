@@ -162,9 +162,9 @@ const CartPage = ({ onTabChange }) => {
                  {/* 수량 조절기 */}
                  <div className="qty-control">
                      {/* 1보다 작아지지 않게 Math.max 사용 */}
-                     <button onClick={() => handleItemCount(item.prodId, Math.max(0, item.quantity - 1))}>−</button>
+                     <button onClick={() => handleItemCount(item.prodId, Math.max(1, item.quantity - 1))}>−</button>
                      {/* item.quantity가 없으면 0을 보여주도록 안전장치(|| 0) 추가 */}
-                     <input type="text" value={item.quantity || 0} readOnly />
+                     <input type="text" value={item.quantity || 1} readOnly />
                      <button onClick={() => handleItemCount(item.prodId, item.quantity + 1)}>+</button>
                   </div>
                  {/* 가격 */}

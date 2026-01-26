@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 1. 상단에 import
 import api from '../../api/axios'; // 만든 파일을 import
 import { useModal } from '../../context/ModalContext';
@@ -10,6 +10,15 @@ const Login = () => {
     const [termsNoti , setTermsNoti] = useState(null);
     const [termsCheck, setTermsCheck] = useState(false);
     // 1. 아이디와 비밀번호를 하나의 객체로 관리합니다.
+
+    // [추가] 이미 로그인된 상태라면 로그인 페이지 접근 차단
+    useEffect(() => {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        if (isLoggedIn === 'true') {
+            navigate('/store/main', { replace: true });
+        }
+    }, [navigate]);
+
     const [loginForm, setLoginForm] = useState({
         userId: '',
         userPw: ''
@@ -41,6 +50,9 @@ const Login = () => {
             if (response.data && response.data.status === 'SUCCESS') {
                 console.log("로그인 성공!");
                 
+                // 로그인 상태 저장 (가드 로직에서 확인용)
+                sessionStorage.setItem('isLoggedIn', 'true');
+
                 // 4. 메인 페이지로 이동 (예: /main 또는 /dashboard)
                 // replace: true를 주면 뒤로가기로 다시 로그인 페이지에 못 오게 합니다.
                 navigate('/store/main', { replace: true });
