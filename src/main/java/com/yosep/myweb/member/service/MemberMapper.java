@@ -36,4 +36,17 @@ public interface MemberMapper {
      */
     List<MemberAddrDTO> selectMemberAddressList(MemberAddrDTO memberAddrDTO);
 
+    /**
+     * 회원의 배송지 목록 등록
+     * @param memberAddrDTO 배송지 정보
+     * @return int 성공 시 1, 실패 시 0 반환
+     */
+    int insertMemberAddress(MemberAddrDTO memberAddrDTO);
+
+    /**
+     * 회원의 배송지 삭제
+     * @param memberAddrDTO 삭제할 배송지 정보 (addrSeq, userId)
+     * @return int 성공 시 1, 실패 시 0 반환
+     */
+    int deleteMemberAddress(MemberAddrDTO memberAddrDTO);
 }

@@ -1,9 +1,11 @@
+/* src/assets/css/address.css */
+
 /* =========================================
-   [추가] 배송지 관리 (Shipping Address)
+   1. 공통 오버레이 및 배송지 목록 (ShippingAddress.jsx)
    ========================================= */
 
-/* 배송지 변경 화면 전체 덮기 (Overlay) */
-.shipping-address-overlay {
+/* [통합] 전체 화면 오버레이 공통 스타일 */
+.full-page-overlay {
     position: fixed;
     top: 0;
     left: 50%;
@@ -12,31 +14,35 @@
     max-width: 450px;
     height: 100%;
     background-color: #ffffff;
-    z-index: 20000; /* 헤더, 탭보다 높게 설정 */
-    overflow-y: auto; /* 배송지 목록이 길어질 경우 내부 스크롤 허용 */
 }
 
-/* 배송지 목록 전체 컨테이너 */
+/* 화면별 개별 설정 (z-index 및 스크롤) */
+/* 1. 배송지 목록: 전체 스크롤, z-index 20000 */
+.page-shipping-list { 
+    z-index: 20000; 
+    overflow-y: auto; 
+}
+
+/* 목록 컨테이너 기본 스타일 */
 .address-page-wrapper {
     background-color: #ffffff;
-    min-height: calc(100vh - 56px); /* 헤더 높이 제외하고 꽉 채움 */
     padding: 20px;
 }
 
-/* 1. 새로운 배송지 추가 버튼 */
+/* 새로운 배송지 추가 버튼 */
 .btn-add-address {
     width: 100%;
     height: 50px;
     background-color: #ffffff;
     border: 1px solid #ddd;
-    border-radius: 4px; /* 살짝 둥근 모서리 */
+    border-radius: 4px;
     font-size: 15px;
     color: #333;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    margin-bottom: 25px; /* 리스트와 간격 */
+    margin-bottom: 25px;
     transition: background 0.2s;
 }
 
@@ -44,12 +50,12 @@
     background-color: #f9f9f9;
 }
 
-/* 2. 배송지 리스트 아이템 */
+/* 배송지 리스트 아이템 */
 .address-item {
     display: flex;
-    align-items: flex-start; /* 위쪽 정렬 */
+    align-items: flex-start;
     gap: 12px;
-    margin-bottom: 25px; /* 아이템 간 간격 */
+    margin-bottom: 25px;
 }
 
 /* 체크 아이콘 (왼쪽) */
@@ -57,17 +63,16 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background-color: #e0e0e0; /* 기본 회색 */
+    background-color: #e0e0e0;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* 크기 줄어들지 않음 */
+    flex-shrink: 0;
     color: white;
     font-size: 14px;
     cursor: pointer;
 }
 
-/* 선택되었을 때 (노란색) */
 .addr-check-btn.selected {
     background-color: var(--color-primary); /* #FFCC00 */
 }
@@ -77,7 +82,6 @@
     flex: 1;
 }
 
-/* 이름/전화번호 줄 */
 .addr-header-row {
     display: flex;
     align-items: center;
@@ -92,9 +96,8 @@
     color: #111;
 }
 
-/* '기본' 뱃지 */
 .badge-default {
-    background-color: #FFD400; /* 조금 더 진한 노랑 or var(--color-primary) */
+    background-color: #FFD400;
     font-size: 11px;
     padding: 2px 6px;
     border-radius: 4px;
@@ -107,41 +110,33 @@
     margin-left: 2px;
 }
 
-/* 구분선 (|) */
 .addr-divider-ver {
     color: #ddd;
     font-size: 12px;
     margin: 0 2px;
 }
 
-/* 실제 주소 텍스트 */
 .addr-detail-text {
     font-size: 15px;
     color: #333;
     line-height: 1.5;
     margin-bottom: 6px;
 }
-/* 상세 주소 줄바꿈 스타일 추가 */
+
 .addr-detail-text .addr-zip-road {
     display: block;
     margin-bottom: 4px;
 }
+
 .addr-detail-text .addr-spec {
     display: block;
-    color: #666; /* 상세 주소는 약간 연하게 */
-}
-
-/* 배송 요청사항 */
-.addr-req-text {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 10px;
+    color: #666;
 }
 
 /* 수정/삭제 버튼 영역 */
 .addr-action-row {
     display: flex;
-    justify-content: flex-end; /* 오른쪽 정렬 */
+    justify-content: flex-end;
     align-items: center;
     gap: 10px;
 }
@@ -161,9 +156,61 @@
     background-color: #ddd;
 }
 
-/* 3. 배송지 추가 폼 스타일 */
+
+/* =========================================
+   2. 배송지 추가/수정 화면 (ShippingAddressAdd.jsx)
+   ★ 중복 제거 및 최적화 완료 (버튼 고정 + 스크롤) ★
+   ========================================= */
+
+/* 1. 전체 컨테이너 */
+.page-shipping-add {
+    z-index: 20001;
+    position: fixed;
+    top: 0;
+    
+    /* 🔥 [핵심 수정] 왼쪽 구석(0)이 아니라 화면 중앙으로 다시 이동 */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    width: 100%;
+    max-width: 450px; /* 모바일 너비 제한 */
+    height: 100%;     /* 모바일 전체 높이 */
+    background-color: #ffffff;
+
+    /* 내부 레이아웃 (버튼 고정용) */
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important; 
+}
+
+/* 2. 헤더: 크기 고정 */
+.page-shipping-add .common-header {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+/* 3. 중간 래퍼: 남은 공간 모두 차지 */
+.page-shipping-add .address-page-wrapper {
+    flex: 1;            
+    width: 100%;
+    min-height: 0;      
+    padding: 0;         
+    position: relative;
+    overflow: hidden;
+    
+    display: flex;      
+    flex-direction: column;
+}
+
+/* 4. 실제 스크롤 영역 (폼) */
 .form-container {
-    padding: 10px 0 100px 0; /* 하단 버튼 공간 확보 */
+    flex: 1;            
+    overflow-y: auto;   
+    padding: 20px;
+    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
 }
 
 .form-group {
@@ -177,7 +224,7 @@
     margin-bottom: 8px;
 }
 
-.input-underline, .select-underline {
+.input-underline {
     width: 100%;
     border: none;
     border-bottom: 1px solid #eee;
@@ -189,11 +236,15 @@
     border-radius: 0;
 }
 
-.input-underline:focus, .select-underline:focus {
+.input-underline:focus {
     border-bottom-color: var(--color-primary);
 }
 
-/* 우편번호 찾기 버튼 */
+/* [추가] 입력 필드 에러 상태 */
+.input-underline.error, .common-select.error {
+    border-bottom-color: #ff4d4f !important;
+}
+
 .btn-zipcode-search {
     display: inline-flex;
     align-items: center;
@@ -208,15 +259,16 @@
     margin-top: 5px;
 }
 
-/* 하단 저장 버튼 영역 */
+/* 5. 하단 저장 버튼 영역 */
 .bottom-btn-area {
-    position: absolute; /* overlay가 fixed이므로 absolute로 하단 고정 */
-    bottom: 0;
-    left: 0;
+    position: relative;
     width: 100%;
     padding: 15px 20px;
     background-color: #fff;
+    
+    flex-shrink: 0;
     box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    z-index: 20;
 }
 
 .btn-save {
@@ -230,3 +282,282 @@
     color: #111;
     cursor: pointer;
 }
+
+.btn-save:disabled {
+    background-color: #e0e0e0 !important;
+    color: #999 !important;
+    cursor: not-allowed;
+}
+
+
+/* =========================================
+   3. 주소 검색 화면 (AddressSearch.jsx)
+   ========================================= */
+
+.page-address-search { 
+    z-index: 20002; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.page-address-search .common-header {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.page-address-search .address-page-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    min-height: 0;
+    background-color: #fff;
+}
+
+.search-guide-area {
+    margin-top: 10px;
+}
+
+.search-guide-label {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.search-input-box {
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 10px 0;
+    border-bottom: 2px solid #ddd;
+    color: #111;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.search-input::placeholder {
+    color: #999;
+    font-weight: 500;
+}
+
+.search-input:focus {
+    border-bottom-color: #333;
+}
+
+.btn-input-clear {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ccc;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* 검색 결과 리스트 */
+.search-result-list {
+    margin-top: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.result-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.result-zip {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.result-road {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.result-jibun {
+    color: #888;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+
+/* =========================================
+   4. 상세 주소 입력 바텀 시트 (Bottom Sheet)
+   ========================================= */
+
+.bottom-sheet-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 20010;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    
+    opacity: 0;
+    animation: fade-in-backdrop 0.3s ease-out forwards;
+}
+
+.bottom-sheet-container {
+    background-color: #fff;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    border-radius: 20px 20px 0 0;
+    padding: 25px 20px;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+    
+    max-height: 85vh;
+    overflow-y: auto;
+
+    transform: translateY(100%);
+    animation: slide-up-smooth 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    animation-delay: 0.1s;
+}
+
+/* 애니메이션 키프레임 */
+@keyframes fade-in-backdrop {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slide-up-smooth {
+    0% { transform: translateY(100%); opacity: 0; }
+    100% { transform: translateY(0%); opacity: 1; }
+}
+
+/* 시트 내부 스타일 */
+.sheet-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.sheet-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+}
+
+.btn-sheet-close {
+    position: absolute;
+    right: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.sheet-close-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.zip-code-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.full-address-text {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.addr-type-box {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: all 0.2s;
+    background-color: #fff;
+}
+
+.addr-type-box.selected {
+    border: 1px solid var(--color-primary);
+    padding: 15px;
+    box-shadow: 0 0 0 1px var(--color-primary) inset;
+    background-color: #fff;
+}
+
+.custom-radio {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.addr-type-box.selected .custom-radio {
+    border-color: var(--color-primary);
+}
+
+.addr-type-box.selected .custom-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+}
+
+.type-content { flex: 1; }
+
+.type-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.type-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.detail-input-area {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.header-right { cursor: pointer; }
+.header-close-icon { width: 24px; height: 24px; display: block; }
+.addr-jibun-gray { color: #999; font-size: 13px; }
+.input-bg-light { background-color: #f9f9f9; padding: 10px; }

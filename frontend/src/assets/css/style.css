@@ -208,7 +208,7 @@ body {
     align-items: center;
     
     /* z-index는 가장 높아야 함 (하단 탭 9999, 버튼 2000보다 높게) */
-    z-index: 10000; 
+    z-index: 30000; 
 }
 
 .modal-content {
@@ -273,43 +273,83 @@ body {
     align-items: center;
 }
 
+/* [추가] 모달 취소 버튼 (회색) */
+.btn-modal-cancel {
+    flex: 1;
+    height: 48px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    border-radius: var(--radius-base);
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+}
+
 /* =========================================
-   4. 커스텀 체크박스
+   4. 커스텀 체크박스 (수정됨)
    ========================================= */
 .checkbox-group {
     display: flex;
     align-items: center;
     gap: 8px;
 }
+
 .checkbox-group label {
     display: flex;
     align-items: center;
     cursor: pointer;
     height: 18px;
+    
+    /* [핵심 수정] 자식인 input(absolute)이 이 라벨 안에서만 위치하도록 기준점 설정 */
+    position: relative; 
 }
+
 .checkbox-group input[type="checkbox"] {
-    position: absolute; opacity: 0; cursor: pointer;
+    /* [핵심 수정] 위치를 라벨 영역으로 꽉 채워서 고정시킴 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0; 
+    cursor: pointer;
+    z-index: 1; /* 클릭 잘 되게 앞으로 배치 */
 }
+
 .custom-check {
     display: inline-block;
-    width: 18px; height: 18px;
+    width: 18px; 
+    height: 18px;
     background-color: #fff;
     border: 2px solid var(--color-border);
     border-radius: 4px;
     position: relative;
     transition: all 0.2s;
     box-sizing: border-box;
+    flex-shrink: 0; /* 라벨 내용이 길어도 체크박스 찌그러짐 방지 */
 }
+
 .checkbox-group input[type="checkbox"]:checked + .custom-check {
-    background-color: #FFD400; border-color: #FFD400;
+    background-color: #FFD400; 
+    border-color: #FFD400;
 }
+
 .custom-check::after {
-    content: ''; position: absolute; display: none;
-    left: 4px; top: 0px;
-    width: 5px; height: 10px;
-    border: solid white; border-width: 0 2px 2px 0;
+    content: ''; 
+    position: absolute; 
+    display: none;
+    left: 4px; 
+    top: 0px;
+    width: 5px; 
+    height: 10px;
+    border: solid white; 
+    border-width: 0 2px 2px 0;
     transform: rotate(45deg);
 }
+
 .checkbox-group input[type="checkbox"]:checked + .custom-check::after {
     display: block;
 }
@@ -686,4 +726,12 @@ body {
     width: 1px;
     height: 10px;
     background-color: #ddd;
+}
+
+/* [추가] 유효성 검사 에러 텍스트 공통 스타일 */
+.error-text {
+    color: #ff4d4f;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
 }

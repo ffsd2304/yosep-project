@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
+import useCommonCode from '../../api/useCommonCode'; // 커스텀 훅 임포트
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
 import '../../assets/css/style.css'; // 기존 style.css import
 import { useHeader } from '../../context/HeaderContext';
-import ShippingAddress from '../common/ShippingAddress'; // 컴포넌트 임포트
+import ShippingAddress from '../address/ShippingAddress'; // 컴포넌트 임포트
 
 const PurchasePage = () => {
   const location = useLocation();
@@ -25,12 +26,13 @@ const PurchasePage = () => {
 
   // 초기값을 null로 설정하고 API를 통해 가져옵니다.
   const [selectedAddr, setSelectedAddr] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState([]);
+  // 커스텀 훅을 사용하여 공통 코드 로드 (state와 effect가 훅 내부로 이동됨)
+  const selectedCategory = useCommonCode('DLVR_REQ_TYPE');
 
   // 1. 초기 배송지 정보 로드
   useEffect(() => {
     // Mapper의 동적 쿼리를 활용하기 위해 defaultYn: 'Y' 파라미터 전달
-    api.post('/api/member/addresses', { defaultYn: 'Y' })
+    api.post('/api/addr/addresses', { defaultYn: 'Y' })
       .then(response => {
         if (response.data.status === 'SUCCESS' && response.data.addresses.length > 0) {
           // 서버에서 이미 기본 배송지만 필터링해서 가져왔으므로 첫 번째 요소를 바로 사용
@@ -40,12 +42,6 @@ const PurchasePage = () => {
       })
       .catch(error => {
         console.error('기본 배송지 로드 실패:', error);
-      });
-      api.get('/api/common/codes/DLVR_REQ_TYPE')
-      .then(res => {
-        if(res.data.status === 'SUCCESS') {
-          setSelectedCategory(res.data.codes);
-        }
       });
 
   }, []);
@@ -80,7 +76,12 @@ const PurchasePage = () => {
       {/* 배송지 선택 모드일 때 ShippingAddress 컴포넌트를 화면 전체에 띄움 */}
       {isAddressMode && (
         <ShippingAddress 
-          onSelect={(addr) => setSelectedAddr(addr)} 
+          selectedAddrId={selectedAddr?.addrSeq} // 현재 선택된 배송지 ID 전달
+          onSelect={(addr) => {
+            setSelectedAddr(addr);
+            setDeliveryRequest(addr?.dlvrReqCode || '');
+            setCustomRequest(addr?.dlvrReqMessage || '');
+          }} 
           onBack={() => setIsAddressMode(false)} 
         />
       )}
@@ -114,7 +115,7 @@ const PurchasePage = () => {
 
           <div className="delivery-request">
             <select 
-              className={`delivery-select ${deliveryRequest === '' ? 'placeholder' : ''}`}
+              className={`common-select ${deliveryRequest === '' ? 'placeholder' : ''}`}
               value={deliveryRequest}
               onChange={(e) => setDeliveryRequest(e.target.value)}
             >

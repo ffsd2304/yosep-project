@@ -1,7 +1,7 @@
 // src/components/common/CommonModal.jsx
 import '../../assets/css/style.css';
 
-const CommonModal = ({ isOpen, onClose, title, children, onConfirm }) => {
+const CommonModal = ({ isOpen, onClose, title, children, onConfirm, type = 'alert' }) => {
     if (!isOpen) return null;
 
     const handleConfirm = () => {
@@ -27,6 +27,11 @@ const CommonModal = ({ isOpen, onClose, title, children, onConfirm }) => {
                 </div>
 
                 <div className="modal-footer">
+                    {type === 'confirm' && (
+                        <button className="btn-modal-cancel" onClick={onClose}>
+                            취소
+                        </button>
+                    )}
                     <button className="btn-modal-close" onClick={handleConfirm}>
                         확인
                     </button>

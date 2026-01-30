@@ -468,7 +468,7 @@
     font-size: 18px;
     font-weight: 700;
     color: #111;
-    margin: 0 0 15px 0; /* 제목과 컨텐츠 사이 간격 확보 */
+    margin: 0;
 }
 
 /* 주소지 변경 버튼 (작고 심플하게) */
@@ -532,7 +532,7 @@
 }
 
 /* 배송 요청사항 Select Box */
-.delivery-select {
+.common-select {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -549,21 +549,21 @@
     -webkit-tap-highlight-color: transparent; /* 모바일 터치 시 깜빡임(하이라이트) 제거 */
 }
 
-.delivery-select:focus {
+.common-select:focus {
     outline: none; /* 클릭 시 생기는 파란/검정 테두리 제거 */
     border-color: #333; /* 선택 중일 때 테두리를 약간 진하게 변경 */
 }
 
 /* 셀렉트 박스 플레이스홀더 효과 (선택 전 흐리게) */
-.delivery-select.placeholder {
+.common-select.placeholder {
     color: #999;
 }
 
-.delivery-select option {
+.common-select option {
     color: #333;
 }
 
-.delivery-select option[value=""] {
+.common-select option[value=""] {
     color: #999;
 }
 

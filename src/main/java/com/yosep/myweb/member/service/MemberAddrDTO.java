@@ -19,11 +19,12 @@ public class MemberAddrDTO implements Serializable {
     private String addrRoad;         // 도로명 주소
     private String addrJibun;        // 지번 주소
     private String addrDetail;       // 상세 주소
+    private String addrDispDtcd;     // 주소 표시 구분 코드 (ROAD:도로명, JIBUN:지번)
     private String defaultYn;        // 기본 배송지 여부 (Y/N)
     private String regDate;          // 등록일
     private String modDate;          // 수정일
     private String dlvrReqCode;      // R001, R002...
-    private String dlvrReqMessage;   // 직접 입력 내용
+    private String dlvrReqMessage;   // 직접입력 배송메모
 
     public MemberAddrDTO() {}
 }

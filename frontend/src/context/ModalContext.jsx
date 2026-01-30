@@ -14,16 +14,18 @@ export const ModalProvider = ({ children }) => {
         isOpen: false,
         title: '',
         content: null, // 컴포넌트도 넣을 수 있게 null로 초기화
-        callback: null
+        callback: null,
+        type: 'alert' // 모달 타입 추가 (기본값: alert)
     });
 
     // 열기 기능
-    const openModal = (title, content, callback = null) => {
+    const openModal = (title, content, callback = null, type = 'alert') => {
         setModalInfo({
             isOpen: true,
             title,
             content,
-            callback
+            callback,
+            type
         });
     };
 
@@ -43,6 +45,7 @@ export const ModalProvider = ({ children }) => {
                 onClose={closeModal}
                 title={modalInfo.title}
                 onConfirm={modalInfo.callback}
+                type={modalInfo.type}
             >
                 {modalInfo.content}
             </CommonModal>

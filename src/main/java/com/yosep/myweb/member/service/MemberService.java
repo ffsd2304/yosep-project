@@ -31,4 +31,14 @@ public class MemberService {
     public List<MemberAddrDTO> getAddressList(MemberAddrDTO memberAddrDTO) {
         return memberMapper.selectMemberAddressList(memberAddrDTO);
     }
+
+    // 회원의 배송지 목록 등록
+    public int insertAddress(MemberAddrDTO memberAddrDTO) {
+        return memberMapper.insertMemberAddress(memberAddrDTO);
+    }
+
+    // 회원의 배송지 삭제
+    public int deleteAddress(MemberAddrDTO memberAddrDTO) {
+        return memberMapper.deleteMemberAddress(memberAddrDTO);
+    }
 }

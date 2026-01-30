@@ -24,7 +24,6 @@ const Main = () => {
     const [activeCategory, setActiveCategory] = useState(''); // 현재 선택된 카테고리
     const [sortType, setSortType] = useState('');          // 현재 정렬 기준
     const [isSortOpen, setIsSortOpen] = useState(false);      // 정렬 드롭다운 토글
-    const [loading, setLoading] = useState(false);
 
     // 드래그 스크롤을 위한 Ref
     const sliderRef = useRef(null);
@@ -53,7 +52,6 @@ const Main = () => {
     // 3. 상품 데이터 로드 (카테고리나 정렬이 바뀔 때마다 실행)
     useEffect(() => {
         const loadProducts = async () => {
-            setLoading(true);
             try {
                 // 기존 JSP의 $.ajax 부분 대체
                 // 주의: 백엔드가 이제 HTML이 아니라 JSON(상품 배열)을 반환해야 합니다!
@@ -65,7 +63,6 @@ const Main = () => {
             } catch (err) {
                 console.error("상품 로드 실패", err);
             } finally {
-                setLoading(false);
             }
         };
 

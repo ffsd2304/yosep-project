@@ -49,9 +49,11 @@ const Login = () => {
             // 백엔드에서 성공 시 보통 result: "success"나 사용자 정보를 보냅니다.
             if (response.data && response.data.status === 'SUCCESS') {
                 console.log("로그인 성공!");
-                
+                // 로그인정보 세션에 저장
+                sessionStorage.setItem('loginUser', JSON.stringify(response.data.loginUser));
                 // 로그인 상태 저장 (가드 로직에서 확인용)
                 sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('storeActiveTab', 'home');
 
                 // 4. 메인 페이지로 이동 (예: /main 또는 /dashboard)
                 // replace: true를 주면 뒤로가기로 다시 로그인 페이지에 못 오게 합니다.

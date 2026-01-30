@@ -24,7 +24,10 @@
     <select id="loginCheck" parameterType="MemberDTO" resultType="MemberDTO">
         SELECT 
             USER_ID    as userId,
-            USER_NAME  as userName
+            USER_NAME  as userName,
+            PHONE_NUM as phoneNum,
+            GENDER_CODE as genderCode,
+            BIRTH_DATE as birthDate
         FROM MEMBER
        WHERE USER_ID = #{userId}
          AND USER_PW = #{userPw} -- 실제로는 암호화가 필요하지만 우선 평문으로 진행합니다.
@@ -49,12 +52,14 @@
             m.USER_NAME        as userName,
             ma.ADDR_SEQ        as addrSeq,
             ma.ADDR_NAME       as addrName,
+            ma.ADDR_TYPE_CODE  as addrTypeCode,
             ma.RECIPIENT_NAME  as recipientName,
             ma.RECIPIENT_PHONE as recipientPhone,
             ma.ZIP_CODE        as zipCode,
             ma.ADDR_ROAD       as addrRoad,
             ma.ADDR_JIBUN      as addrJibun,
             ma.ADDR_DETAIL     as addrDetail,
+            ma.ADDR_DISP_DTCD  as addrDispDtcd,
             ma.DEFAULT_YN      as defaultYn,
             ma.DLVR_REQ_CODE    AS dlvrReqCode,
             ma.DLVR_REQ_MESSAGE AS dlvrReqMessage
@@ -66,4 +71,42 @@
         </if>
         ORDER BY ma.DEFAULT_YN DESC, ma.ADDR_SEQ ASC
     </select>
+
+    <update id="insertMemberAddress" parameterType="MemberAddrDTO">
+        MERGE INTO MEMBER_ADDR M
+        USING DUAL
+           ON (M.ADDR_SEQ = #{addrSeq} AND M.USER_ID = #{userId})
+        WHEN MATCHED THEN
+            UPDATE SET
+                ADDR_TYPE_CODE   = #{addrTypeCode},
+                ADDR_NAME        = #{addrName},
+                RECIPIENT_NAME   = #{recipientName},
+                RECIPIENT_PHONE  = #{recipientPhone},
+                ZIP_CODE         = #{zipCode},
+                ADDR_ROAD        = #{addrRoad},
+                ADDR_JIBUN       = #{addrJibun},
+                ADDR_DETAIL      = #{addrDetail},
+                ADDR_DISP_DTCD   = #{addrDispDtcd},
+                DEFAULT_YN       = #{defaultYn},
+                DLVR_REQ_CODE    = #{dlvrReqCode},
+                DLVR_REQ_MESSAGE = #{dlvrReqMessage}
+        WHEN NOT MATCHED THEN
+            INSERT (
+                ADDR_SEQ, USER_ID, ADDR_TYPE_CODE, ADDR_NAME,
+                RECIPIENT_NAME, RECIPIENT_PHONE, ZIP_CODE,
+                ADDR_ROAD, ADDR_JIBUN, ADDR_DETAIL,
+                ADDR_DISP_DTCD, DEFAULT_YN, DLVR_REQ_CODE, DLVR_REQ_MESSAGE
+            ) VALUES (
+                SEQ_MEMBER_ADDR.NEXTVAL, #{userId}, #{addrTypeCode}, #{addrName},
+                #{recipientName}, #{recipientPhone}, #{zipCode},
+                #{addrRoad}, #{addrJibun}, #{addrDetail},
+                #{addrDispDtcd}, #{defaultYn}, #{dlvrReqCode}, #{dlvrReqMessage}
+            )
+    </update>
+
+    <delete id="deleteMemberAddress" parameterType="MemberAddrDTO">
+        DELETE FROM MEMBER_ADDR
+         WHERE ADDR_SEQ = #{addrSeq}
+           AND USER_ID = #{userId}
+    </delete>
 </mapper>

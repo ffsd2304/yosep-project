@@ -7,6 +7,7 @@ import StoreContainer from './components/common/StoreContainer';
 import Login from './components/login/Login';
 import ProductDetail from './components/product/ProductDetail';
 import PurchasePage from './components/product/PurchasePage';
+import { CartProvider } from './context/CartContext';
 
 /**
  * ✅ 1. 실제 UI 레이아웃과 경로 감지 로직을 담은 컴포넌트
@@ -43,7 +44,7 @@ function AppContent() {
             <Route
               path="/store/*"
               element={
-                <>
+                <CartProvider>
                   <CommonHeader />
                   <Routes>
                     {/* 상세, 구매 페이지는 별도 라우트로 관리 (탭 바 위로 덮어씌워짐) */}
@@ -53,7 +54,7 @@ function AppContent() {
                     <Route path="*" element={<StoreContainer activeTab={activeTab} onTabChange={handleTabChange} />} />
                   </Routes>
                   <BottomTab activeTab={activeTab} onTabChange={handleTabChange} />
-                </>
+                </CartProvider>
               }
             />
           </Routes>
