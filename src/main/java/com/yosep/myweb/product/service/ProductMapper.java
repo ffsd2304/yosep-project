@@ -5,6 +5,11 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.yosep.myweb.product.dto.CartDTO;
+import com.yosep.myweb.product.dto.ProductDTO;
+import com.yosep.myweb.product.dto.ProductImgDTO;
+import com.yosep.myweb.product.dto.WishListDTO;
+
 @Mapper
 public interface ProductMapper {
     // 카테고리별 상품 목록 조회

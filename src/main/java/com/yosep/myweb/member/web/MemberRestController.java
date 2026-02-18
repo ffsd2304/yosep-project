@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yosep.myweb.member.service.MemberDTO;
+import com.yosep.myweb.member.dto.MemberDTO;
 import com.yosep.myweb.member.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;

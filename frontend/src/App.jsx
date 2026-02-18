@@ -1,33 +1,61 @@
-import { useState } from 'react';
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import './assets/css/style.css';
 import BottomTab from './components/common/BottomTab';
 import CommonHeader from './components/common/CommonHeader';
-import StoreContainer from './components/common/StoreContainer';
+import Loading from './components/common/Loading'; // 로딩 컴포넌트 재사용
 import Login from './components/login/Login';
-import ProductDetail from './components/product/ProductDetail';
-import PurchasePage from './components/product/PurchasePage';
 import { CartProvider } from './context/CartContext';
+import { LoadingProvider } from './context/LoadingContext'; // 1. Provider import
+
+// ✅ 코드 분할 (Lazy Loading) 적용
+// 사용자가 해당 페이지에 접근할 때만 JS 파일을 다운로드합니다.
+const StoreContainer = lazy(() => import('./components/common/StoreContainer'));
+const OrderListPage = lazy(() => import('./components/product/OrderListPage'));
+const PaymentPage = lazy(() => import('./components/product/PaymentPage'));
+const PaymentResultPage = lazy(() => import('./components/product/PaymentResultPage'));
+const ProductDetail = lazy(() => import('./components/product/ProductDetail'));
+
+// ✅ 레이아웃 컴포넌트 정의
+// 1. 메인 레이아웃: 헤더 + 콘텐츠(Outlet) + 하단 탭
+const MainLayout = () => {
+  return (
+    <>
+      <CommonHeader />
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
+      {/* style.css에서 전역 패딩을 제거했으므로, 탭 높이만큼의 여백을 여기서 확보합니다. */}
+      <div style={{ height: '65px' }}></div>
+      <BottomTab />
+    </>
+  );
+};
+
+// 2. 서브 레이아웃: 헤더 + 콘텐츠(Outlet) (하단 탭 없음)
+const SubLayout = () => {
+  return (
+    <>
+      <CommonHeader />
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
+    </>
+  );
+};
 
 /**
  * ✅ 1. 실제 UI 레이아웃과 경로 감지 로직을 담은 컴포넌트
  * 이 컴포넌트는 BrowserRouter 내부에서 렌더링되므로 useLocation 사용이 가능합니다.
  */
 function AppContent() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  // 탭 상태를 App 레벨로 끌어올림
-  const [activeTab, setActiveTab] = useState(sessionStorage.getItem('storeActiveTab') || 'home');
-
   const handleTabChange = (tabName) => {
-    setActiveTab(tabName);
-    sessionStorage.setItem('storeActiveTab', tabName);
-    
-    // 상세페이지나 구매페이지에서 탭을 누르면 메인 컨테이너로 이동
-    if (location.pathname.includes('productDetail') || location.pathname.includes('purchase')) {
-      navigate('/store/main');
-    }
+    // ✅ 복잡한 상태 동기화 로직 제거 -> 오직 이동만 수행
+    if (tabName === 'home') navigate('/store/main');
+    else if (tabName === 'cart') navigate('/store/cart');
+    else if (tabName === 'mypage') navigate('/store/mypage');
   };
 
   return (
@@ -41,22 +69,24 @@ function AppContent() {
             <Route path="/store/login" element={<Login />} />
 
             {/* 2. 장바구니가 필요한 경로들을 그룹화 (Provider 안) */}
-            <Route
-              path="/store/*"
-              element={
-                <CartProvider>
-                  <CommonHeader />
-                  <Routes>
-                    {/* 상세, 구매 페이지는 별도 라우트로 관리 (탭 바 위로 덮어씌워짐) */}
-                    <Route path="productDetail/:prodId" element={<ProductDetail />} />
-                    <Route path="purchase" element={<PurchasePage />} />
-                    {/* 나머지 모든 경로는 StoreContainer가 탭(Main, Cart, MyPage)으로 처리 */}
-                    <Route path="*" element={<StoreContainer activeTab={activeTab} onTabChange={handleTabChange} />} />
-                  </Routes>
-                  <BottomTab activeTab={activeTab} onTabChange={handleTabChange} />
-                </CartProvider>
-              }
-            />
+            {/* path="/store"로 설정하고 내부에서 Outlet으로 분기합니다. */}
+            <Route path="/store" element={<CartProvider><Outlet /></CartProvider>}>
+              
+              {/* (A) 탭이 필요한 페이지들 (MainLayout 적용) */}
+              <Route element={<MainLayout />}>
+                {/* StoreContainer가 메인, 장바구니, 마이페이지 탭을 관리 */}
+                <Route path="*" element={<StoreContainer onTabChange={handleTabChange} />} />
+              </Route>
+
+              {/* (B) 탭이 없어야 하는 페이지들 (SubLayout 적용) */}
+              <Route element={<SubLayout />}>
+                <Route path="productDetail/:prodId" element={<ProductDetail />} />
+                <Route path="payment" element={<PaymentPage />} />
+                <Route path="paymentResult" element={<PaymentResultPage />} />
+                <Route path="orderList" element={<OrderListPage />} />
+              </Route>
+
+            </Route>
           </Routes>
         </main>
       </div>
@@ -71,7 +101,9 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <LoadingProvider> {/* 2. 앱 전체를 감싸서 어디서든 로딩 사용 가능 */}
+        <AppContent />
+      </LoadingProvider>
     </BrowserRouter>
   );
 }

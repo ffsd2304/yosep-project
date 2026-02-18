@@ -8,11 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.yosep.myweb.banner.service.BannerDTO;
-import com.yosep.myweb.code.service.CommonCodeDTO;
+import com.yosep.myweb.banner.dto.BannerDTO;
+import com.yosep.myweb.code.dto.CommonCodeDTO;
 import com.yosep.myweb.common.util.LogUtil;
 import com.yosep.myweb.main.service.HomeService;
-import com.yosep.myweb.member.service.MemberDTO;
+import com.yosep.myweb.member.dto.MemberDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;

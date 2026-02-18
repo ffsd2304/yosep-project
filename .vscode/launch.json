@@ -9,7 +9,8 @@
             "projectName": "demo",
             "args": "",
             "envFile": "${workspaceFolder}/.env",
-            "vmArgs": "-Dfile.encoding=UTF-8"
+            "vmArgs": "-Dfile.encoding=UTF-8",
+            "console": "integratedTerminal"
         }
     ]
 }

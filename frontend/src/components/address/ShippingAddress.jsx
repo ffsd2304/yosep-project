@@ -4,16 +4,17 @@ import api from '../../api/axios';
 import useBodyScrollLock from '../../api/useBodyScrollLock';
 import '../../assets/css/address.css';
 import '../../assets/css/style.css';
+import { useLoading } from '../../context/LoadingContext'; // 전역 로딩 훅
 import { useModal } from '../../context/ModalContext';
 import ShippingAddressAdd from './ShippingAddressAdd';
 
 const ShippingAddress = ({ onSelect, onBack, selectedAddrId }) => {
   useBodyScrollLock();
   const [addresses, setAddresses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [isAddMode, setIsAddMode] = useState(false); // 추가 모드 상태
   const [editData, setEditData] = useState(null);    // 수정할 데이터 상태
   const { openModal } = useModal();
+  const { showLoading, hideLoading } = useLoading();
 
   // 배경 스크롤 방지 로직
   useEffect(() => {
@@ -27,18 +28,18 @@ const ShippingAddress = ({ onSelect, onBack, selectedAddrId }) => {
 
   // [수정] 목록 조회 함수 분리 (재사용을 위해)
   const fetchAddresses = () => {
-    setLoading(true);
+    showLoading();
     return api.post('/api/addr/addresses', {})
       .then(response => {
         if (response.data.status === 'SUCCESS') {
           setAddresses(response.data.addresses);
         }
-        setLoading(false);
+        hideLoading();
         return response.data.addresses || []; // 다음 처리를 위해 목록 반환
       })
       .catch(error => {
         console.error('Error fetching shipping addresses:', error);
-        setLoading(false);
+        hideLoading();
         return [];
       });
   };
@@ -99,6 +100,7 @@ const ShippingAddress = ({ onSelect, onBack, selectedAddrId }) => {
   };
 
   return createPortal(
+    <>
     <div className="full-page-overlay page-shipping-list">
       
       {/* 배송지 추가 화면 (Overlay 위에 Overlay) */}
@@ -122,11 +124,11 @@ const ShippingAddress = ({ onSelect, onBack, selectedAddrId }) => {
         <h1 className="header-title">배송지</h1>
         
         {/* 오른쪽: 닫기(X) 아이콘 */}
-        <div className="header-right" onClick={onBack} style={{ cursor: 'pointer' }}>
+        <div className="header-right" onClick={onBack}>
           <img 
             src="/images/icon/x-icon.png" 
             alt="닫기" 
-            style={{ width: '24px', height: '24px', display: 'block' }} 
+            className="header-close-icon"
           />
         </div>
       </header>
@@ -136,16 +138,14 @@ const ShippingAddress = ({ onSelect, onBack, selectedAddrId }) => {
         
         {/* 상단: 새 배송지 추가 버튼 */}
         <button className="btn-add-address" onClick={() => setIsAddMode(true)}>
-          <span style={{ fontSize: '18px', marginRight: '4px' }}>+</span> 
+          <span className="add-icon">+</span> 
           새로운 배송지 추가
         </button>
 
         {/* 배송지 리스트 */}
         <div className="address-list">
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '20px' }}>로딩 중...</div>
-          ) : addresses.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>등록된 배송지가 없습니다.</div>
+          {addresses.length === 0 ? (
+            <div className="address-empty">등록된 배송지가 없습니다.</div>
           ) : (
             addresses.map((item) => (
               <div key={item.addrSeq} className="address-item" onClick={() => handleSelect(item)}>
@@ -185,7 +185,8 @@ const ShippingAddress = ({ onSelect, onBack, selectedAddrId }) => {
           )}
         </div>
       </div>
-    </div>,
+    </div>
+    </>,
     document.body // 3. body 태그로 전송
   );
 };

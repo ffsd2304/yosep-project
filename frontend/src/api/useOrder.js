@@ -24,7 +24,7 @@ export const useOrder = () => {
             }));
 
             // state에 구매할 상품 정보를 담아서 보냅니다.
-            navigate('/store/purchase', { state: { orderItems: items } });
+            navigate('/store/payment', { state: { orderItems: items } });
 
         } catch (error) {
             // 4. 재고 부족 등의 에러 처리

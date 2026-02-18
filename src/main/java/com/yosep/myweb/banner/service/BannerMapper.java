@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.yosep.myweb.banner.dto.BannerDTO;
+
 /**
  * 메인 배너 데이터 처리를 위한 매퍼 인터페이스
  */

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.yosep.myweb.code.dto.CommonCodeDTO;
 import com.yosep.myweb.code.service.CodeCacheService;
-import com.yosep.myweb.code.service.CommonCodeDTO;
 
 import lombok.RequiredArgsConstructor;
 

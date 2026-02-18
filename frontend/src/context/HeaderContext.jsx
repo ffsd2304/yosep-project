@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 // 1. 방송국 채널 개설
 const HeaderContext = createContext();
@@ -16,8 +16,11 @@ export const HeaderProvider = ({ children }) => {
         setHeaderConfig({ title, showBack });
     }, []);
 
+    // 3. [핵심] value 객체 자체를 메모이제이션 해야 진정한 최적화가 됩니다.
+    const headerValue = useMemo(() => ({ headerConfig, setHeader }), [headerConfig, setHeader]);
+
     return (
-        <HeaderContext.Provider value={{ headerConfig, setHeader }}>
+        <HeaderContext.Provider value={headerValue}>
             {children}
         </HeaderContext.Provider>
     );

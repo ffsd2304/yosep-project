@@ -4,7 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import com.yosep.myweb.product.dto.CartDTO;
+import com.yosep.myweb.product.dto.ProductDTO;
+import com.yosep.myweb.product.dto.ProductImgDTO;
+import com.yosep.myweb.product.dto.WishListDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,14 +20,19 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    // value: 캐시 저장소 이름 (Redis에 저장될 폴더명 같은 개념)
+    // key: 캐시 구분 기준 (파라미터인 map 내용이 같으면 같은 데이터를 줌)
+    @Cacheable(value = "productList", key = "#params")
     public List<ProductDTO> getProductList(Map<String, Object> params) {
         return productMapper.getProductList(params);
     }
     // 상품 상세 조회
+    @Cacheable(value = "productDetail", key = "#prodId")
     public ProductDTO getProductInfo(String prodId) {
         return productMapper.getProductInfo(prodId);
     }
     // 슬라이더 이미지 여러 개 가져오기
+    @Cacheable(value = "productImages", key = "#prodId")
     public List<ProductImgDTO> getSliderImages(String prodId) {
         return productMapper.getSliderImages(prodId);
     }

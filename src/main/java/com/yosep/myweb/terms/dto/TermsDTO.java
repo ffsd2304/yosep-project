@@ -1,4 +1,4 @@
-package com.yosep.myweb.terms.service;
+package com.yosep.myweb.terms.dto;
 
 import lombok.Data;
 

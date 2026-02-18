@@ -1,0 +1,1 @@
+import{r as e,a as r}from"./index-DPA2hM0q.js";const f=s=>{const[o,a]=e.useState([]);return e.useEffect(()=>{if(!s)return;(async()=>{try{const t=await r.get(`/api/common/codes/${s}`);t.data.status==="SUCCESS"&&a(t.data.codes)}catch(t){console.error("공통 코드() 조회 실패:",t)}})()},[s]),o};export{f as u};

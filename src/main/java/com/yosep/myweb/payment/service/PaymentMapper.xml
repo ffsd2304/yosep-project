@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yosep.myweb.payment.service.PaymentMapper">
+
+    <insert id="insertOrderList" parameterType="OrderListDTO">
+        INSERT INTO ORDER_LIST (
+            ORDER_ID,
+            USER_ID,
+            TOTAL_PROD_PRICE,
+            SHIPPING_FEE,
+            FINAL_PRICE,
+            ORDER_STATUS,
+            ORDER_DATE,
+            RECEIVER_NAME,
+            RECEIVER_ADDR,
+            RECEIVER_TEL
+        ) VALUES (
+            #{orderId, jdbcType=VARCHAR},
+            #{userId, jdbcType=VARCHAR},
+            #{totalProdPrice, jdbcType=NUMERIC},
+            #{shippingFee, jdbcType=NUMERIC},
+            #{finalPrice, jdbcType=NUMERIC},
+            #{orderStatus, jdbcType=VARCHAR},
+            SYSDATE,
+            #{receiverName, jdbcType=VARCHAR},
+            #{receiverAddr, jdbcType=VARCHAR},
+            #{receiverTel, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="insertOrderItem" parameterType="OrderItemDTO">
+        INSERT INTO ORDER_ITEM (
+            ITEM_ID,
+            ORDER_ID,
+            PROD_ID,
+            QUANTITY,
+            PRICE
+        ) VALUES (
+            SEQ_ORDER_ITEM_ID.NEXTVAL,
+            #{orderId, jdbcType=VARCHAR},
+            #{prodId, jdbcType=VARCHAR},
+            #{quantity, jdbcType=NUMERIC},
+            #{price, jdbcType=NUMERIC}
+        )
+    </insert>
+
+    <insert id="insertPaymentDetail" parameterType="PaymentDetailDTO">
+        INSERT INTO PAYMENT_DETAIL (
+            IMP_UID, ORDER_ID, PAY_METHOD, PAID_AMOUNT, PG_PROVIDER, PAID_AT, RECEIPT_URL
+        ) VALUES (
+            #{impUid, jdbcType=VARCHAR}, 
+            #{orderId, jdbcType=VARCHAR}, 
+            #{payMethod, jdbcType=VARCHAR}, 
+            #{paidAmount, jdbcType=NUMERIC}, 
+            #{pgProvider, jdbcType=VARCHAR}, 
+            #{paidAt, jdbcType=TIMESTAMP}, 
+            #{receiptUrl, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <!-- 주문 상태 업데이트 (PENDING -> PAID) -->
+    <update id="updateOrderStatus">
+        UPDATE ORDER_LIST
+        SET ORDER_STATUS = #{status}
+        WHERE ORDER_ID = #{orderId}
+    </update>
+
+    <!-- 주문 내역 조회 (주문당 대표 상품 1개 정보 포함) -->
+    <select id="selectOrderList" resultType="java.util.HashMap">
+        SELECT
+            O.ORDER_ID AS "orderNo",
+            O.ORDER_DATE AS "orderDate",
+            CASE 
+                WHEN O.ORDER_STATUS = 'PAID' THEN '결제완료'
+                WHEN O.ORDER_STATUS = 'PENDING' THEN '결제대기'
+                WHEN O.ORDER_STATUS = 'FAILED' THEN '결제실패'
+                WHEN O.ORDER_STATUS = 'CANCELLED' THEN '주문취소'
+                ELSE O.ORDER_STATUS
+            END AS "status",
+            O.ORDER_STATUS AS "orderStatus",
+            O.FINAL_PRICE AS "totalAmount",
+            P.PROD_NAME AS "productName",
+            (P.IMAGE_URL || P.FILE_NAME) AS "productImg",
+            OI.QUANTITY AS "quantity"
+        FROM ORDER_LIST O
+        JOIN (
+            SELECT ORDER_ID, PROD_ID, QUANTITY,
+                   ROW_NUMBER() OVER(PARTITION BY ORDER_ID ORDER BY ITEM_ID) as RN
+            FROM ORDER_ITEM
+        ) OI ON O.ORDER_ID = OI.ORDER_ID AND OI.RN = 1
+        LEFT JOIN PRODUCT_MASTER P ON OI.PROD_ID = P.PROD_ID
+        WHERE O.USER_ID = #{userId}
+        AND O.ORDER_DATE >= ADD_MONTHS(SYSDATE, -#{period})
+        ORDER BY O.ORDER_DATE DESC
+    </select>
+
+</mapper>

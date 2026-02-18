@@ -24,10 +24,19 @@ public class WebConfig implements WebMvcConfigurer {
 
         // ▼▼▼ [추가] CORS 설정 (리액트 접속 허용) ▼▼▼
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")               // 모든 주소에 대해
-                .allowedOrigins("http://localhost:5173", "http://10.0.2.2:5173", "http://10.101.66.154:5173") // 리액트 서버 주소(포트) 허용
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 동작
-                .allowCredentials(true); // 쿠키/세션 정보 허용
-    }
+public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**")
+            // allowedOrigins 대신 allowedOriginPatterns를 사용하면 
+            // 와일드카드(*)를 조합해서 더 유연하게 등록할 수 있습니다.
+            .allowedOriginPatterns(
+                "http://localhost:5173",
+                "http://10.0.2.2:5173",
+                "http://10.101.66.154:5173",
+                "http://10.101.66.120:*", // 포트 번호가 바뀌어도 허용되도록 수정
+                "http://136.118.142.58:*"  // [추가] 구글 인스턴스 IP 허용
+            )
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("*") // 모든 헤더 허용 추가 (안전장치)
+            .allowCredentials(true);
+}
 }

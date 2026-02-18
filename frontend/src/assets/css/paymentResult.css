@@ -1,0 +1,250 @@
+/* src/assets/css/paymentResult.css */
+
+/* 전체 래퍼: 하단 고정 버튼(약 60~70px) 공간 확보 및 배경색 설정 */
+.payment-result-wrap {
+    padding-bottom: 90px; 
+    background-color: #ffffff;
+    /* content-area가 이미 padding-top을 가지고 있지만, 
+       시각적 밸런스를 위해 추가 여백이 필요하면 여기에 padding-top을 더 줄 수 있습니다. */
+}
+
+/* 1. 주문번호 박스 */
+/* 상단 곰돌이가 사라졌으므로, 헤더 바로 아래에 붙지 않게 margin-top을 줍니다 */
+.order-no-box {
+    margin: 20px 20px 30px; /* 위 20px, 좌우 20px, 아래 30px */
+    background-color: #f5f6f8; /* 연한 회색 배경 */
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #eeeeee; /* 아주 연한 테두리 추가 */
+}
+
+.order-no-box .label {
+    color: #666;
+    font-weight: 500;
+}
+
+.order-no-box .divider {
+    margin: 0 8px;
+    color: #ccc;
+    font-size: 12px;
+}
+
+.order-no-box .value {
+    font-weight: bold;
+    color: #111;
+    flex: 1; /* 남은 공간 차지 */
+    word-break: break-all; /* 긴 번호 줄바꿈 */
+    margin-right: 10px;
+}
+
+.btn-copy {
+    border: none;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+/* 공통 섹션 스타일 */
+.result-section {
+    padding: 0 20px 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+    margin-bottom: 15px;
+}
+
+/* 2. 배송지 정보 상세 */
+.delivery-info {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+}
+
+.delivery-info .info-header {
+    margin-bottom: 6px;
+}
+
+.delivery-info .addr-name {
+    font-weight: bold;
+    font-size: 15px;
+    color: #111;
+}
+
+.addr-user-row {
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.addr-detail-text {
+    color: #111;
+    margin-bottom: 8px;
+}
+
+.addr-msg {
+    color: #666;
+    font-size: 13px;
+    background-color: #fafafa;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.addr-msg .label {
+    color: #999;
+    margin-right: 6px;
+    font-weight: 500;
+}
+
+/* 주문 상품 아이템 */
+.ordered-product-item {
+    display: flex;
+    gap: 12px;
+    padding: 15px 0 0;
+    border-top: 1px solid #eee;
+}
+
+.ordered-product-item .img-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid #eee;
+}
+
+.ordered-product-item .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ordered-product-item .text-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ordered-product-item .prod-name {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ordered-product-item .prod-option {
+    font-size: 12px;
+    color: #888;
+}
+
+/* 섹션 구분선 (굵은 회색) */
+.section-divider {
+    height: 10px;
+    background-color: #f5f5f5;
+    margin-bottom: 30px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* 3. 결제 정보 리스트 */
+.payment-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payment-detail-list .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+}
+
+.payment-detail-list .row .value {
+    color: #333;
+    text-align: right;
+    font-weight: 500;
+}
+
+.total-amount-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.total-amount-row .label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #111;
+}
+
+.total-amount-row .value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111; /* 필요 시 var(--color-primary) 등 사용 */
+}
+
+/* 4. 하단 고정 버튼 (2개 배치용) */
+/* .action-buttons 클래스는 product.css 또는 style.css에 정의된 것을 상속받음 */
+.action-buttons.dual-buttons {
+    display: flex;
+    gap: 8px; /* 버튼 사이 간격 */
+    padding: 10px 15px 20px; /* 패딩 조정 */
+    box-sizing: border-box;
+}
+
+/* 흰색 버튼 (쇼핑계속하기) */
+.btn-white {
+    flex: 1;
+    height: 50px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-white:hover {
+    background-color: #f9f9f9;
+}
+
+/* 노란색 버튼 (주문/배송내역) */
+.btn-yellow {
+    flex: 1;
+    height: 50px;
+    background-color: #FFCC00; /* 서비스 메인 컬러 */
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #111;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-yellow:hover {
+    background-color: #f0c000;
+}

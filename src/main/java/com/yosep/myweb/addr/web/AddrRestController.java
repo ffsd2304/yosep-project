@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.yosep.myweb.member.service.MemberAddrDTO;
-import com.yosep.myweb.member.service.MemberDTO;
+import com.yosep.myweb.member.dto.MemberAddrDTO;
+import com.yosep.myweb.member.dto.MemberDTO;
 import com.yosep.myweb.member.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;

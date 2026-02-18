@@ -28,7 +28,7 @@ const CartPage = ({ onTabChange }) => {
 
   // 헤더 설정
   useEffect(() => {
-    setHeader('장바구니', true);
+    setHeader('장바구니', false);
   }, []);
 
   // 2. 전체 선택 상태 계산 (항상 Context의 cartItems 기준으로 계산됨)
@@ -108,15 +108,17 @@ const CartPage = ({ onTabChange }) => {
       
       {/* 1. 상단 전체 선택 바 */}
       <div className="cart-controls">
-        <label className="checkbox-group">
-            <input 
-                  type="checkbox"  
-                  checked={isAllChecked} 
-                  onChange={handleSelectAll}
-                />
-            <span className="custom-check"></span>
-            <span className="label-text">전체선택</span>
-        </label>
+        <div className="checkbox-group">
+            <label>
+                <input 
+                      type="checkbox"  
+                      checked={isAllChecked} 
+                      onChange={handleSelectAll}
+                    />
+                <span className="custom-check"></span>
+                <span className="label-text">전체선택</span>
+            </label>
+        </div>
         <button className="btn-delete-selected" onClick={() => handleRemoveSelected()}>선택삭제</button>
       </div>
 
@@ -126,14 +128,16 @@ const CartPage = ({ onTabChange }) => {
           <div key={item.prodId} className="cart-item">
             {/* 체크박스 */}
             <div className="item-check">
-               <label className="checkbox-group">
-                  <input
-                        type="checkbox"
-                        checked={item.checked} 
-                        onChange={() => handleToggleItem(item.prodId, item.checked)}
-                   />
-                  <span className="custom-check"></span>
-               </label>
+               <div className="checkbox-group">
+                  <label>
+                      <input
+                            type="checkbox"
+                            checked={item.checked} 
+                            onChange={() => handleToggleItem(item.prodId, item.checked)}
+                       />
+                      <span className="custom-check"></span>
+                  </label>
+               </div>
             </div>
 
             {/* 상품 정보 영역 */}

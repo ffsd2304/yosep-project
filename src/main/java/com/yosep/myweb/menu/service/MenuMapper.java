@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.yosep.myweb.menu.dto.MenuMasterDto;
+
 @Mapper
 public interface MenuMapper {
     // XML의 <select id="getMenuList"> 와 이름이 같아야 함

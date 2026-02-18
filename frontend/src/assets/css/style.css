@@ -78,7 +78,7 @@ body {
 
 .content-area {
   padding-top: 0; /* 50px를 0으로 변경 */
-  padding-bottom: 65px; /* 바텀 높이 */
+  padding-bottom: 0; /* 레이아웃별로 여백을 관리하기 위해 전역 패딩 제거 */
 }
 
 /* 메인 앱 컨테이너 (모바일 뷰 프레임) */
@@ -734,4 +734,118 @@ body {
     font-size: 12px;
     margin-top: 4px;
     display: block;
+}
+
+/* =========================================
+   [공통] 바텀 시트 (Bottom Sheet) 프레임워크
+   ★ 주소검색, 필터, 옵션 선택 등 모든 반팝업 공통 ★
+   ========================================= */
+
+/* 1. 뒷배경 (어두운 막) */
+.bottom-sheet-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 30000; /* 최상단 레벨 */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* 바닥에 붙이기 */
+    
+    /* 등장 애니메이션 (투명 -> 불투명) */
+    opacity: 0;
+    animation: fade-in-backdrop 0.3s ease-out forwards;
+}
+
+/* 2. 흰색 컨테이너 (실제 내용 박스) */
+.bottom-sheet-container {
+    background-color: #fff;
+    width: 100%;
+    max-width: 450px; /* 모바일 틀 너비 유지 */
+    margin: 0 auto;   /* 중앙 정렬 */
+    border-radius: 20px 20px 0 0; /* 위쪽 둥글게 */
+    padding: 25px 20px 30px;      /* 안쪽 여백 */
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.15);
+    
+    max-height: 85vh; /* 화면 높이의 85%까지만 */
+    overflow-y: auto; /* 내용 길면 스크롤 */
+    position: relative;
+
+    /* 올라오는 애니메이션 */
+    transform: translateY(100%);
+    animation: slide-up-smooth 0.3s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+    animation-delay: 0.1s;
+}
+
+/* 3. 시트 헤더 (제목 + 닫기 버튼) */
+.sheet-header {
+    display: flex;
+    justify-content: center; /* 제목 중앙 정렬 */
+    align-items: center;
+    position: relative;
+    margin-bottom: 20px;
+    min-height: 24px;
+}
+
+.sheet-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #111;
+}
+
+.btn-sheet-close {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px; /* 터치 영역 확보 */
+}
+/* 닫기 아이콘 크기 */
+.sheet-close-icon {
+    width: 18px; 
+    height: 18px; 
+    display: block;
+}
+
+/* 4. 애니메이션 키프레임 */
+@keyframes fade-in-backdrop {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slide-up-smooth {
+    0% { transform: translateY(100%); opacity: 0; }
+    100% { transform: translateY(0%); opacity: 1; }
+}
+
+/* =========================================
+   8. [추가] 토스트 메시지 (Toast Message)
+   ========================================= */
+.toast-message {
+    position: fixed;
+    bottom: 100px; /* 하단 탭보다 높게 설정 */
+    left: 50%;
+    transform: translate(-50%, 20px); /* 기본 상태: 약간 아래에 위치 */
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 14px;
+    z-index: 40000; /* 최상단 노출 (모달 30000보다 높음) */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s; /* transform 추가 */
+    pointer-events: none; /* 클릭 통과 */
+    white-space: nowrap;
+}
+
+.toast-message.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0); /* 활성 상태: 제자리로 올라옴 */
 }

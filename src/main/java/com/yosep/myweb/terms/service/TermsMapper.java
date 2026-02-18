@@ -2,6 +2,8 @@ package com.yosep.myweb.terms.service;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.yosep.myweb.terms.dto.TermsDTO;
+
 @Mapper
 public interface TermsMapper {
     /**

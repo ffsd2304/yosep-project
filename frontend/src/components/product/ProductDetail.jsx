@@ -11,6 +11,7 @@ import { useOrder } from '../../api/useOrder'; // 공통 구매 훅 import
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
 import { useCart } from '../../context/CartContext';
 import { useHeader } from '../../context/HeaderContext'; // 리모컨 가져오기
+import { useLoading } from '../../context/LoadingContext'; // 전역 로딩 훅
 
 
 const ProductDetail = () => {
@@ -20,6 +21,7 @@ const ProductDetail = () => {
     const { prodId } = useParams();
     const { addToCart } = useCart(); // 아까 만든 훅 호출
     const { orderItems } = useOrder(); // 공통 구매 훅 호출
+    const { showLoading, hideLoading } = useLoading();
 
     const [prod, setProd] = useState(null);
     const [sliderList, setSliderList] = useState([]);
@@ -35,6 +37,7 @@ const ProductDetail = () => {
 
     useEffect(() => {
         const fetchInitProdData = async () => {
+            showLoading();
             try {
                 // 백엔드에서 배너와 카테고리를 주는 API를 호출한다고 가정
                 const res = await api.post('/api/product/detail',{
@@ -44,6 +47,8 @@ const ProductDetail = () => {
                 setSliderList(res.data.sliderList || []);
             } catch (err) {
                 console.error("초기 데이터 로드 실패", err);
+            } finally {
+                hideLoading();
             }
         };
         fetchInitProdData();
@@ -87,7 +92,8 @@ const ProductDetail = () => {
     };
 
     if (!prod) {
-        return <div className="loading-container" style={{textAlign:'center', padding:'50px'}}>로딩 중...</div>;
+        // 데이터 로딩 중에는 아무것도 그리지 않음 (전역 로딩이 덮고 있음)
+        return null;
     }
     return (
         <div className="product-detail-wrap">

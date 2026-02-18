@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import api from '../api/axios';
 import { useModal } from "./ModalContext";
 import { useToast } from "./ToastContext";
@@ -23,7 +23,7 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   // 장바구니 추가 함수
-  const addToCart = async (product) => {
+  const addToCart = useCallback(async (product) => {
     // 1. 현재 장바구니(cartItems)에 같은 ID를 가진 상품이 있는지 확인
     // 주의: 기존 코드에서 item.id라고 하셨는데, 보통 product.prodId가 그대로 들어갔다면 item.prodId일 확률이 높습니다.
     const existingItem = cartItems.find((item) => item.prodId === product.prodId);
@@ -43,20 +43,20 @@ export const CartProvider = ({ children }) => {
         prodDesc: product.prodDesc,
         fileName: product.fileName,
         imageUrl: product.imageUrl,
-        quantity: 1
+        quantity: product.quantity || 1
       });
 
       if (res.status === 200) {
         showToast("장바구니에 담겼습니다.");
-        // 4. 존재하지 않을 때만 실행됨: 새로 추가 (초기 수량 1)
-        setCartItems((prevItems) => [...prevItems, { ...product, quantity: 1, checked: true }]);
+        // 4. 존재하지 않을 때만 실행됨: 새로 추가
+        setCartItems((prevItems) => [...prevItems, { ...product, quantity: qty, checked: true }]);
       }
     } catch (error) {
       console.error("장바구니 추가 실패:", error);
     }
-  };
+  }, [cartItems, openModal, showToast]); // cartItems가 바뀌면 함수도 갱신되어야 최신 목록을 확인 가능
 
-  const removeFromCart = async (target) => {
+  const removeFromCart = useCallback(async (target) => {
     const idsToRemove = Array.isArray(target) ? target : [target];
 
     try {
@@ -71,14 +71,17 @@ export const CartProvider = ({ children }) => {
     } catch (error) {
       console.error("장바구니 삭제 실패:", error);
     }
-  };
+  }, []); // 의존성 없음: 항상 고정된 참조값 유지 (최고의 효율)
 
   /**
    * [추가] 장바구니 아이템 업데이트 함수
    * @param {number} prodId - 상품 ID
    * @param {object} newAttributes - 변경할 속성 (예: { checked: false } 또는 { quantity: 5 })
    */
-  const updateCartItem = (prodId, newAttributes) => {
+  const updateCartItem = useCallback((prodId, newAttributes) => {
+    // 1. 현재 아이템의 정보를 찾습니다 (변경 전 수량 확인용)
+    const currentItem = cartItems.find(item => item.prodId === prodId);
+
     setCartItems((prevItems) => 
       prevItems.map((item) => 
         item.prodId === prodId ? { ...item, ...newAttributes } : item
@@ -86,11 +89,16 @@ export const CartProvider = ({ children }) => {
     );
 
     // 수량이 변경된 경우 서버에 업데이트 요청
-    if (newAttributes.quantity !== undefined) {
-      api.post('/api/cart/update', {
-        prodId,
-        quantity: newAttributes.quantity
-      }).catch(err => console.error("수량 업데이트 실패:", err));
+    if (newAttributes.quantity !== undefined && currentItem) {
+      // 🚨 백엔드가 '더하기(Add)' 로직이라면, 전체 수량이 아닌 '차이값(Delta)'을 보내야 합니다.
+      const delta = newAttributes.quantity - currentItem.quantity;
+      
+      if (delta !== 0) {
+        api.post('/api/cart/update', {
+          prodId,
+          quantity: delta
+        }).catch(err => console.error("수량 업데이트 실패:", err));
+      }
     }
 
     if (newAttributes.checked !== undefined) {
@@ -99,16 +107,16 @@ export const CartProvider = ({ children }) => {
         checked: newAttributes.checked?'Y':'N'
       }).catch(err => console.error("체크 상태 업데이트 실패:", err));
     }
-  };
+  }, [cartItems]);
 
   /**
    * [추가] 장바구니 전체 업데이트 함수 (전체 선택/해제용)
    */
-  const updateAllCartItems = (newAttributes) => {
+  const updateAllCartItems = useCallback((newAttributes) => {
     setCartItems((prevItems) => 
       prevItems.map((item) => ({ ...item, ...newAttributes }))
     );
-  };
+  }, []);
 
   // [추가] 장바구니 금액 계산 (cartItems가 바뀔 때만 재계산)
   const { totalAmount, shippingFee, finalAmount } = useMemo(() => {
@@ -122,8 +130,14 @@ export const CartProvider = ({ children }) => {
     return { totalAmount: total, shippingFee: shipping, finalAmount: final };
   }, [cartItems]);
 
+  // [핵심] Provider에 내려주는 value 객체 자체를 묶어야 함
+  const cartValue = useMemo(() => ({
+    cartItems, addToCart, removeFromCart, updateCartItem, updateAllCartItems, 
+    totalAmount, shippingFee, finalAmount
+  }), [cartItems, addToCart, removeFromCart, updateCartItem, updateAllCartItems, totalAmount, shippingFee, finalAmount]);
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateCartItem, updateAllCartItems, totalAmount, shippingFee, finalAmount }}>
+    <CartContext.Provider value={cartValue}>
       {children}
     </CartContext.Provider>
   );

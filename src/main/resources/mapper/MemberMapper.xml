@@ -66,16 +66,13 @@
         FROM MEMBER m
         JOIN MEMBER_ADDR ma ON m.USER_ID = ma.USER_ID
         WHERE m.USER_ID = #{userId}
-        <if test="defaultYn != null and defaultYn != ''">
-            AND ma.DEFAULT_YN = #{defaultYn}
-        </if>
-        ORDER BY ma.DEFAULT_YN DESC, ma.ADDR_SEQ ASC
+        ORDER BY ma.DEFAULT_YN DESC, ma.ADDR_SEQ DESC
     </select>
 
     <update id="insertMemberAddress" parameterType="MemberAddrDTO">
         MERGE INTO MEMBER_ADDR M
         USING DUAL
-           ON (M.ADDR_SEQ = #{addrSeq} AND M.USER_ID = #{userId})
+           ON (M.ADDR_SEQ = #{addrSeq, jdbcType=NUMERIC} AND M.USER_ID = #{userId})
         WHEN MATCHED THEN
             UPDATE SET
                 ADDR_TYPE_CODE   = #{addrTypeCode},

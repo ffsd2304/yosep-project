@@ -1,4 +1,4 @@
-package com.yosep.myweb.member.service;
+package com.yosep.myweb.member.dto;
 
 import java.io.Serializable;
 

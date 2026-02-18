@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'; // 👈 1. createPortal 불러오기
 import api from '../../api/axios';
 import '../../assets/css/address.css';
 import '../../assets/css/style.css';
+import { useLoading } from '../../context/LoadingContext'; // 전역 로딩 훅
 
 const AddressSearch = ({ onClose, onSelect }) => {
 
@@ -14,7 +15,7 @@ const AddressSearch = ({ onClose, onSelect }) => {
   const [addrDispDtcd, setAddrDispDtcd] = useState('ROAD');
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, showLoading, hideLoading } = useLoading(); // 전역 로딩 상태 사용
 
   const searchAddress = async (isNewSearch = true) => {
     // 이벤트 객체나 undefined가 넘어오면 새로운 검색으로 간주
@@ -26,7 +27,7 @@ const AddressSearch = ({ onClose, onSelect }) => {
     const targetPage = isNewSearch ? 1 : page + 1;
 
     try {
-      setIsLoading(true);
+      showLoading();
       const response = await api.get('/api/addr/juso', {
         params: {
           keyword: keyword, // state에 있는 검색어
@@ -85,7 +86,7 @@ const AddressSearch = ({ onClose, onSelect }) => {
     } catch (error) {
       console.error("주소 검색 실패", error);
     } finally {
-      setIsLoading(false);
+      hideLoading();
     }
   };
 

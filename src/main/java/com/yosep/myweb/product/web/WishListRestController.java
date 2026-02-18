@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yosep.myweb.member.service.MemberDTO;
+import com.yosep.myweb.member.dto.MemberDTO;
+import com.yosep.myweb.product.dto.WishListDTO;
 import com.yosep.myweb.product.service.ProductService;
-import com.yosep.myweb.product.service.WishListDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

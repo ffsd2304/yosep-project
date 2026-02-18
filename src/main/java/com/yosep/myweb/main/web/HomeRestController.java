@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yosep.myweb.banner.service.BannerDTO;
-import com.yosep.myweb.code.service.CommonCodeDTO;
+import com.yosep.myweb.banner.dto.BannerDTO;
+import com.yosep.myweb.code.dto.CommonCodeDTO;
 import com.yosep.myweb.main.service.HomeService;
 
 import lombok.RequiredArgsConstructor;

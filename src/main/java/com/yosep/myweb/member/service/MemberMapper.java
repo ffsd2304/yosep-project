@@ -1,10 +1,11 @@
 package com.yosep.myweb.member.service; // 1. 변경된 패키지 경로
 
 import java.util.List;
-// MemberDTO가 같은 패키지(com.yosep.myweb.member.service)에 있다면 import가 필요 없습니다.
-// 만약 다른 패키지에 있다면 import com.yosep.myweb.member.service.MemberDTO; 를 추가해야 합니다.
 
 import org.apache.ibatis.annotations.Mapper;
+
+import com.yosep.myweb.member.dto.MemberAddrDTO;
+import com.yosep.myweb.member.dto.MemberDTO;
 
 @Mapper
 public interface MemberMapper {

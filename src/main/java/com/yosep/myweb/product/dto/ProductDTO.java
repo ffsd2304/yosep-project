@@ -1,11 +1,15 @@
-package com.yosep.myweb.product.service;
+package com.yosep.myweb.product.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
 
 @Data
-public class ProductDTO {
+public class ProductDTO implements Serializable{
+    // 클래스 버전 관리를 위한 ID (필드가 변경되어도 에러 방지)
+    private static final long serialVersionUID = 1L;
+
     // --- [기존 컬럼들] ---
     private int prodId;        // 상품 일련번호 (DB: NUMBER)
     private String cateCode;   // 카테고리 코드

@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.yosep.myweb.member.dto.MemberAddrDTO;
+import com.yosep.myweb.member.dto.MemberDTO;
+
 import lombok.RequiredArgsConstructor;
 
 @Service

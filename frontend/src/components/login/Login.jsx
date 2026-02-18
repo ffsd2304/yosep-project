@@ -13,9 +13,13 @@ const Login = () => {
 
     // [추가] 이미 로그인된 상태라면 로그인 페이지 접근 차단
     useEffect(() => {
-        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
-        if (isLoggedIn === 'true') {
-            navigate('/store/main', { replace: true });
+        // .env 모드가 production(운영)일 때만 동작하도록 조건 추가
+        // 개발 중(npm run dev)에는 서버 재시작 시 세션 불일치로 인한 불편함을 방지합니다.
+        if (import.meta.env.PROD) {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                navigate('/store/main', { replace: true });
+            }
         }
     }, [navigate]);
 

@@ -126,6 +126,16 @@
 			<version>3.0.5</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- 스프링 부트 캐시 스타터 -->
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency> -->
+		<!-- 레디스 (Redis를 사용할 경우) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

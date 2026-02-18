@@ -9,8 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.yosep.myweb.product.service.ProductDTO;
-import com.yosep.myweb.product.service.ProductImgDTO;
+import com.yosep.myweb.product.dto.ProductDTO;
+import com.yosep.myweb.product.dto.ProductImgDTO;
 import com.yosep.myweb.product.service.ProductMapper;
 
 import lombok.extern.slf4j.Slf4j;

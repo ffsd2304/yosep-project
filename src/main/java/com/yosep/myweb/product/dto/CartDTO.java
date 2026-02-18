@@ -1,4 +1,4 @@
-package com.yosep.myweb.product.service;
+package com.yosep.myweb.product.dto;
 
 import lombok.Data;
 

@@ -1,9 +1,11 @@
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import api from '../../api/axios'; // 설정해둔 axios 인스턴스
 import '../../assets/css/product.css'; // 상품 관련 스타일 로드
 import { useHeader } from '../../context/HeaderContext'; // 리모컨 가져오기
+import Loading from '../common/Loading'; // 로딩 컴포넌트 import
 
 import ProductList from '../product/ProductList'; // 경로에 맞게 import
 
@@ -19,7 +21,6 @@ const Main = () => {
     // 1. 상태 관리 (State)
     const [banners, setBanners] = useState([]);      // 배너 목록
     const [categories, setCategories] = useState([]); // 카테고리 목록
-    const [products, setProducts] = useState([]);     // 상품 목록
     
     const [activeCategory, setActiveCategory] = useState(''); // 현재 선택된 카테고리
     const [sortType, setSortType] = useState('');          // 현재 정렬 기준
@@ -28,6 +29,7 @@ const Main = () => {
     // 드래그 스크롤을 위한 Ref
     const sliderRef = useRef(null);
     const { setHeader } = useHeader(); // 리모컨 기능 중 '설정하기' 가져옴
+    const queryClient = useQueryClient(); // 캐시 데이터 수정을 위한 클라이언트
 
     useEffect(() => {
         // 화면이 열릴 때(마운트 될 때) 실행
@@ -49,25 +51,16 @@ const Main = () => {
         fetchInitData();
     }, []);
 
-    // 3. 상품 데이터 로드 (카테고리나 정렬이 바뀔 때마다 실행)
-    useEffect(() => {
-        const loadProducts = async () => {
-            try {
-                // 기존 JSP의 $.ajax 부분 대체
-                // 주의: 백엔드가 이제 HTML이 아니라 JSON(상품 배열)을 반환해야 합니다!
-                const res = await api.post('/api/product/list', {
-                    cateCode: activeCategory,
-                    sortType: sortType
-                });
-                setProducts(res.data || []);
-            } catch (err) {
-                console.error("상품 로드 실패", err);
-            } finally {
-            }
-        };
-
-        loadProducts();
-    }, [activeCategory, sortType]);
+    // 3. 상품 데이터 로드 (useQuery로 변경)
+    // queryKey에 포함된 변수(activeCategory, sortType)가 바뀌면 자동으로 재조회합니다.
+    // isLoading: 데이터를 가져오는 중인지 알려주는 '자동 스위치'입니다.
+    const { data: products = [], isLoading } = useQuery({
+        queryKey: ['products', activeCategory, sortType],
+        queryFn: async () => {
+            const res = await api.post('/api/product/list', { cateCode: activeCategory, sortType });
+            return res.data || [];
+        }
+    });
 
     // 4. 카테고리 슬라이더 마우스 드래그 로직 (JQuery -> React Ref 변환)
     useEffect(() => {
@@ -118,13 +111,15 @@ const Main = () => {
     // [추가] 상품 리스트 내 하트 클릭 시 로컬 상태 업데이트 함수
     // 서버 재조회 없이 프론트엔드 데이터만 즉시 변경하여 UI 반응성을 높임
     const handleWishToggle = (targetProdId) => {
-        setProducts(prevProducts => 
-            prevProducts.map(prod => 
+        // useQuery 캐시 데이터를 직접 수정하여 화면을 즉시 갱신합니다.
+        queryClient.setQueryData(['products', activeCategory, sortType], (oldData) => {
+            if (!oldData) return [];
+            return oldData.map(prod => 
                 prod.prodId === targetProdId 
                     ? { ...prod, isWished: prod.isWished === 1 ? 0 : 1 } 
                     : prod
-            )
-        );
+            );
+        });
     };
 
     // 정렬 텍스트 표시용 헬퍼
@@ -136,6 +131,10 @@ const Main = () => {
 
     return (
         <div className="explore-container">
+            {/* useQuery가 "로딩 중(isLoading)"이라고 하면 Loading 컴포넌트를 보여줍니다. */}
+            {/* 데이터 로딩이 끝나면 isLoading이 false가 되면서 자동으로 사라집니다. */}
+            {isLoading && <Loading />}
+
             {/* <CommonHeader title="Bot World" showBack={false}/> */}
             {/* 1. 메인 배너 (Swiper) */}
             <Swiper

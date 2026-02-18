@@ -1,9 +1,20 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useHeader } from '../../context/HeaderContext';
 import Main from '../main/Main';
+import MyPage from '../myPage/MyPage';
 import CartPage from '../product/CartPage';
 
-const StoreContainer = ({ activeTab, onTabChange }) => {
+const StoreContainer = ({ onTabChange }) => {
+    const location = useLocation();
+
+    // ✅ URL을 보고 현재 탭을 스스로 판단합니다. (진실의 원천: URL)
+    const getActiveTab = () => {
+        if (location.pathname.includes('/store/cart')) return 'cart';
+        if (location.pathname.includes('/store/mypage')) return 'mypage';
+        return 'home'; // 기본값
+    };
+    const activeTab = getActiveTab();
 
     const { setHeader } = useHeader();
 
@@ -23,9 +34,9 @@ const StoreContainer = ({ activeTab, onTabChange }) => {
         if (activeTab === 'home') {
             setHeader('Bot World', false);
         } else if (activeTab === 'cart') {
-            setHeader('장바구니', true);
+            setHeader('장바구니', false);
         } else if (activeTab === 'mypage') {
-            setHeader('내 정보', true);
+            setHeader('내 정보', false);
         }
     }, [activeTab, setHeader]);
 
@@ -45,10 +56,7 @@ const StoreContainer = ({ activeTab, onTabChange }) => {
 
             {/* 3. 내 정보 (MyPage) */}
             <div style={{ display: activeTab === 'mypage' ? 'block' : 'none' }}>
-                {visited.mypage && (
-                    // <MyPage /> 
-                    <div style={{ padding: '20px', textAlign: 'center' }}>내 정보 페이지 준비중</div>
-                )}
+                {visited.mypage && <MyPage />}
             </div>
         </div>
     );
